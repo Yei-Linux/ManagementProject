@@ -1,20 +1,24 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import SignIn from '../../components/signIn/SignIn';
-import { CustomDiv } from './styledComponent';
+import React, { Fragment, useEffect } from "react";
+import PropTypes from "prop-types";
+import SignIn from "../../components/signIn/SignIn";
+import { CustomDiv } from "./styledComponent";
+
+import SignUp from "../../components/signup/SignUp";
+import { useLocation } from "react-router-dom";
 
 function Login(props) {
-    return (
-        <Fragment>
-            <CustomDiv>
-                <SignIn />
-            </CustomDiv>    
-        </Fragment>
-    );
+  const location = useLocation();
+
+  useEffect(() => {
+  }, []);
+
+  return (
+    <Fragment>
+      <CustomDiv>{location.pathname == "/signup" ? <SignUp /> : <SignIn />}</CustomDiv>
+    </Fragment>
+  );
 }
 
 export default Login;
 
-Login.propTypes = {
-    
-};
+Login.propTypes = {};

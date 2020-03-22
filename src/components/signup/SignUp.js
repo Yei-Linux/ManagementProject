@@ -1,42 +1,46 @@
 import React from "react";
+import { Redirect, useHistory } from "react-router-dom";
 import PropTypes from "prop-types";
+
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
-import Avatar from '@material-ui/core/Avatar';
-import Chip from '@material-ui/core/Chip';
-import FaceIcon from '@material-ui/icons/Face';
-import DoneIcon from '@material-ui/icons/Done';
+import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
+import FaceIcon from "@material-ui/icons/Face";
+import DoneIcon from "@material-ui/icons/Done";
 import clsx from "clsx";
-import { signInStyles } from "./SignMaterialStyle";
-import PasswordInput from '../commons/password-input/PasswordInput';
-import { useHistory } from "react-router-dom";
+import { signUpStyles } from "./SignMaterialStyle";
+import PasswordInput from "../commons/password-input/PasswordInput";
 
-function SignIn(props) {
+function SignUp(props) {
   const history = useHistory();
-  const classes = signInStyles();
+  const classes = signUpStyles();
 
-  const redirectSignUp = () => {
-    history.push("/signup");
+  const redirectSignIn = () => {
+    history.push("/");
   };
-
-  const onSubmitForm = e => {
-    e.preventDefault();
-    localStorage.setItem("user_info","exampleToken");
-    history.push("/home");
-  }
 
   return (
     <Card className={classes.root}>
       <CardActionArea>
         <CardContent>
-          <form onSubmit = {onSubmitForm} className={classes.form} noValidate autoComplete="off">
+          <form className={classes.form} noValidate autoComplete="off">
             <FormControl className={clsx(classes.formControl)}>
               <TextField
-                label="User"
+                label="Full Name"
+                className={clsx(classes.input)}
+                id="margin-normal"
+                helperText="Put your fullname"
+                margin="normal"
+              />
+            </FormControl>
+            <FormControl className={clsx(classes.formControl)}>
+              <TextField
+                label="Email"
                 className={clsx(classes.input)}
                 id="margin-normal"
                 helperText="Put your email"
@@ -50,17 +54,15 @@ function SignIn(props) {
               className={classes.buttonSubmit}
               variant="contained"
               color="primary"
-              type = "submit"
             >
-              SignIn
+              Create Account
             </Button>
           </form>
-
           <Chip
-            onClick = {redirectSignUp}
-            className={classes.chip}  
+            onClick={redirectSignIn}
+            className={classes.chip}
             icon={<FaceIcon />}
-            label="SignUp"
+            label="SignIn"
             clickable
             color="primary"
             deleteIcon={<DoneIcon />}
@@ -72,4 +74,6 @@ function SignIn(props) {
   );
 }
 
-export default SignIn;
+export default SignUp;
+
+SignUp.propTypes = {};
