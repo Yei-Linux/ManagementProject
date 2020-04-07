@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 
 import List from "@material-ui/core/List";
@@ -22,8 +22,18 @@ import SaveIcon from "@material-ui/icons/Save";
 
 import { CssTextField } from "./AsideMaterialStyle";
 
+import asideContext from '../../context/aside/asideContext';
+
+const projectsStaticList = ["Spring Project", "Laravel Ecommerce", "Angular App"];
+
 function Aside({ parentCallBack, open, classes }) {
   const theme = useTheme();
+
+  const { isNewProject, projectList, showNewProjectForm, getListProjects } = useContext(asideContext);
+
+  useEffect(()=>{
+    getListProjects(projectsStaticList);
+  },[]);
 
   return (
     <Drawer
@@ -54,16 +64,22 @@ function Aside({ parentCallBack, open, classes }) {
         variant="contained"
         color="secondary"
         className={classes.button}
+        onClick={() => showNewProjectForm()}
         startIcon={<Icon color="primary">add_circle</Icon>}
       >
         New Project
       </Button>
-      <CssTextField
+
+      {
+        isNewProject && 
+        <CssTextField
         className={classes.margin}
         label="Project Name"
         variant="outlined"
         id="custom-css-outlined-input"
-      />
+        />
+      }
+      
       <Button
         variant="contained"
         color="primary"
@@ -80,7 +96,7 @@ function Aside({ parentCallBack, open, classes }) {
         Projects
       </Typography>
       <List>
-        {["Spring Project", "Laravel Ecommerce", "Angular App"].map((text, index) => (
+        {projectList.map((text, index) => (
           <ListItem button key={text}>
             <ListItemIcon>
               {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}

@@ -7,37 +7,37 @@ import { requireSignIn, notLogin } from "./guards/managmentGuard";
 import { BrowserRouter as Router, Switch } from "react-router-dom";
 import { GuardProvider, GuardedRoute } from "react-router-guards";
 
+import AsideState from "./context/aside/asideState";
+
 function App() {
   return (
-    <Router>
-      <Fragment>
-        <Switch>
-          <GuardProvider guards={[notLogin]}>
-            <GuardedRoute
-              exact
-              path="/"
-              render={props => (
-                <Login {...props}/>
-              )}
-            />
-            <GuardedRoute
-              exact
-              path="/signup"
-              render={props => (
-                <Login {...props}/>
-              )}
-            />
-            <GuardProvider guards={[requireSignIn]}>
+    <AsideState>
+      <Router>
+        <Fragment>
+          <Switch>
+            <GuardProvider guards={[notLogin]}>
               <GuardedRoute
                 exact
-                path="/home"
-                render={props => <ManagmentHome {...props} />}
+                path="/"
+                render={props => <Login {...props} />}
               />
+              <GuardedRoute
+                exact
+                path="/signup"
+                render={props => <Login {...props} />}
+              />
+              <GuardProvider guards={[requireSignIn]}>
+                <GuardedRoute
+                  exact
+                  path="/home"
+                  render={props => <ManagmentHome {...props} />}
+                />
+              </GuardProvider>
             </GuardProvider>
-          </GuardProvider>
-        </Switch>
-      </Fragment>
-    </Router>
+          </Switch>
+        </Fragment>
+      </Router>
+    </AsideState>
   );
 }
 
