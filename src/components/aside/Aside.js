@@ -21,19 +21,25 @@ import Icon from "@material-ui/core/Icon";
 import SaveIcon from "@material-ui/icons/Save";
 
 import { CssTextField } from "./AsideMaterialStyle";
+import { Formik } from 'formik';
 
-import asideContext from '../../context/aside/asideContext';
+import contextProject from '../../context/project/projectContext';
 
 const projectsStaticList = ["Spring Project", "Laravel Ecommerce", "Angular App"];
 
 function Aside({ parentCallBack, open, classes }) {
   const theme = useTheme();
 
-  const { isNewProject, projectList, showNewProjectForm, getListProjects } = useContext(asideContext);
+  const { isNewProject, projectList, showNewProjectForm, getListProjects } = useContext(contextProject);
 
   useEffect(()=>{
     getListProjects(projectsStaticList);
   },[]);
+
+  const addingProject = ({project}) => {
+    console.log('Adding project in backend ' + project);
+    showNewProjectForm(false);
+  }
 
   return (
     <Drawer
@@ -64,7 +70,7 @@ function Aside({ parentCallBack, open, classes }) {
         variant="contained"
         color="secondary"
         className={classes.button}
-        onClick={() => showNewProjectForm()}
+        onClick={() => showNewProjectForm(true)}
         startIcon={<Icon color="primary">add_circle</Icon>}
       >
         New Project
@@ -72,24 +78,35 @@ function Aside({ parentCallBack, open, classes }) {
 
       {
         isNewProject && 
-        <CssTextField
-        className={classes.margin}
-        label="Project Name"
-        variant="outlined"
-        id="custom-css-outlined-input"
-        />
+        <Formik initialValues = {{project : ''}} onSubmit={data=>{
+          addingProject(data);
+        }}>
+          {({values,handleChange,handleBlur,handleSubmit})=>(
+            <form onSubmit = {handleSubmit}>
+                <CssTextField
+                className={classes.margin}
+                label="Project Name"
+                variant="outlined"
+                name="project"
+                value={values.project}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                />
+                <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                className={classes.button}
+                startIcon={<SaveIcon />}
+                type="submit"
+              >
+                Add Project
+              </Button>
+            </form>
+          )}
+        </Formik>
       }
       
-      <Button
-        variant="contained"
-        color="primary"
-        size="small"
-        className={classes.button}
-        startIcon={<SaveIcon />}
-      >
-        Add Project
-      </Button>
-
       <Divider />
 
       <Typography variant="h6" noWrap className={classes.text}>

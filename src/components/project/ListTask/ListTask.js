@@ -1,7 +1,7 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import List from "@material-ui/core/List";
+import List from "@material-ui/core/List"; 
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
@@ -16,11 +16,21 @@ import Icon from "@material-ui/core/Icon";
 import Typography from "@material-ui/core/Typography";
 
 import { taskListStyles } from "./ListTaskMatStyle";
+import contextTask from '../../../context/task/taskContext';
 
 ListTask.propTypes = {};
+const tasksListStatic = [{'id':1,'name':'Select Hosting to microservice','date':'Jan 9,2015'},
+                   {'id':2,'name':'Configure DB','date':'Jan 11,2015'},
+                   {'id':3,'name':'Deploy App','date':'Jan 20,2019'}];
 
 function ListTask(props) {
   const classes = taskListStyles();
+
+  const { taskList ,getTasksList } = useContext(contextTask);
+
+  useEffect(()=>{
+    getTasksList(tasksListStatic);
+  },[]);
 
   return (
     <Fragment>
@@ -29,80 +39,32 @@ function ListTask(props) {
       </Typography>
 
       <List className={classes.root}>
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <ImageIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Select hosting" secondary="Jan 9, 2014" />
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.button}
-            startIcon={<DeleteIcon />}
-          >
-            Delete
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            endIcon={<Icon>send</Icon>}
-          >
-            Edit
-          </Button>
-        </ListItem>
-
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <WorkIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Configure DB" secondary="Jan 7, 2014" />
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.button}
-            startIcon={<DeleteIcon />}
-          >
-            Delete
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            endIcon={<Icon>send</Icon>}
-          >
-            Edit
-          </Button>
-        </ListItem>
-
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <BeachAccessIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Deploy App" secondary="July 20, 2014" />
-          <Button
-            variant="contained"
-            color="secondary"
-            className={classes.button}
-            startIcon={<DeleteIcon />}
-          >
-            Delete
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            endIcon={<Icon>send</Icon>}
-          >
-            Edit
-          </Button>
-        </ListItem>
+        {taskList.map((task) => (
+            <ListItem key={task.id}>
+              <ListItemAvatar>
+                <Avatar>
+                  <ImageIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={task.name} secondary={task.date} />
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                startIcon={<DeleteIcon />}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                endIcon={<Icon>send</Icon>}
+              >
+                Edit
+              </Button>
+            </ListItem>
+          ))}
       </List>
 
       <Button

@@ -1,10 +1,10 @@
 import React, { useReducer } from 'react';
-import contextAside from './asideContext';
-import reducerProject from './asideReducer'
+import contextProject from './projectContext';
+import reducerProject from './projectReducer'
 
-import { NEW_PROJECT_FORM,GET_PROJECT_LIST } from '../types';
+import { NEW_PROJECT_FORM,GET_PROJECT_LIST,ADD_PROJECT_TO_PROJECT_LIST } from '../types';
 
-function AsideState(props) {
+function ProjectState(props) {
     const initialState = {
         projectList: [],
         isNewProject  : false
@@ -12,9 +12,10 @@ function AsideState(props) {
 
     const [state,dispatch] = useReducer(reducerProject,initialState);
 
-    const showNewProjectForm = () =>{
+    const showNewProjectForm = isVisible =>{
         dispatch({
-            type: NEW_PROJECT_FORM
+            type: NEW_PROJECT_FORM,
+            payload: isVisible
         });
     }
 
@@ -26,7 +27,7 @@ function AsideState(props) {
     }
 
     return (
-        <contextAside.Provider
+        <contextProject.Provider
             value={{
                 projectList: state.projectList,
                 isNewProject: state.isNewProject,
@@ -35,9 +36,9 @@ function AsideState(props) {
             }}
         >
             {props.children}
-        </contextAside.Provider>
+        </contextProject.Provider>
     );
 }
 
-export default AsideState
+export default ProjectState
 

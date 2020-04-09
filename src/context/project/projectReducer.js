@@ -5,7 +5,7 @@ export default (state, action) => {
     case NEW_PROJECT_FORM:
       return {
         ...state,
-        isNewProject: true
+        isNewProject: action.payload
       };
     case GET_PROJECT_LIST:
       return {
