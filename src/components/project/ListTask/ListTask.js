@@ -1,7 +1,7 @@
 import React, { Fragment, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 
-import List from "@material-ui/core/List"; 
+import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
@@ -16,54 +16,62 @@ import Icon from "@material-ui/core/Icon";
 import Typography from "@material-ui/core/Typography";
 
 import { taskListStyles } from "./ListTaskMatStyle";
-import contextTask from '../../../context/task/taskContext';
+import contextTask from "../../../context/task/taskContext";
+import CollapseByTask from "./CollapseByTask/CollapseByTask";
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+
+import { parseFormatDate } from "../../../helpers/DateHelper";
 
 ListTask.propTypes = {};
-const tasksListStatic = [{'id':1,'name':'Select Hosting to microservice','date':'Jan 9,2015'},
-                   {'id':2,'name':'Configure DB','date':'Jan 11,2015'},
-                   {'id':3,'name':'Deploy App','date':'Jan 20,2019'}];
 
 function ListTask(props) {
   const classes = taskListStyles();
 
-  const { taskList ,getTasksList } = useContext(contextTask);
+  const { taskList, projectByTasks } = useContext(contextTask);
 
-  useEffect(()=>{
-    getTasksList(tasksListStatic);
-  },[]);
+  useEffect(() => {}, []);
 
   return (
     <Fragment>
       <Typography variant="h6" noWrap className={classes.text}>
-        Spring Project
+        {projectByTasks && projectByTasks.name}
       </Typography>
 
       <List className={classes.root}>
-        {taskList.map((task) => (
-            <ListItem key={task.id}>
-              <ListItemAvatar>
-                <Avatar>
-                  <ImageIcon />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={task.name} secondary={task.date} />
-              <Button
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                startIcon={<DeleteIcon />}
-              >
-                Delete
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                endIcon={<Icon>send</Icon>}
-              >
-                Edit
-              </Button>
-            </ListItem>
+        {taskList &&
+          taskList.map((task,index) => (
+            <Fragment>
+              <ListItem key={task._id}>
+                <ListItemAvatar>
+                  <Avatar>
+                    <ImageIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={task.name}
+                  secondary={parseFormatDate(task.createAt)}
+                />
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  className={classes.button}
+                  startIcon={<DeleteIcon />}
+                >
+                  Delete
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.button}
+                  endIcon={<Icon>send</Icon>}
+                >
+                  Edit
+                </Button>
+                {true ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              <CollapseByTask/>
+            </Fragment>
           ))}
       </List>
 

@@ -24,21 +24,37 @@ import { CssTextField } from "./AsideMaterialStyle";
 import { Formik } from 'formik';
 
 import contextProject from '../../context/project/projectContext';
-
-const projectsStaticList = ["Spring Project", "Laravel Ecommerce", "Angular App"];
+import contextTask from '../../context/task/taskContext';
+import { getProjects,addProject,getProjectWithTasks } from '../../services/projectService';
 
 function Aside({ parentCallBack, open, classes }) {
   const theme = useTheme();
 
-  const { isNewProject, projectList, showNewProjectForm, getListProjects } = useContext(contextProject);
+  const { isNewProject, projectList, showNewProjectForm, setListProjects } = useContext(contextProject);
+  const { setTasksList, setProjectByTasks } = useContext(contextTask);
 
   useEffect(()=>{
-    getListProjects(projectsStaticList);
+    loadProjects();
   },[]);
 
-  const addingProject = ({project}) => {
-    console.log('Adding project in backend ' + project);
-    showNewProjectForm(false);
+  const loadProjects = () =>{
+    getProjects().then( projectsResponse => {
+      setListProjects(projectsResponse.projects);
+    });
+  }
+
+  const addingProject = (data) => {
+    addProject(data).then( response => {
+      loadProjects();
+      showNewProjectForm(false);
+    });
+  }
+
+  const loadTasksByProject = (project) =>{
+    getProjectWithTasks(project._id).then( tasksResponse => {
+      setTasksList(tasksResponse.data.projectWithTasks.tasks);
+      setProjectByTasks(tasksResponse.data.projectWithTasks.project);
+    });
   }
 
   return (
@@ -78,7 +94,7 @@ function Aside({ parentCallBack, open, classes }) {
 
       {
         isNewProject && 
-        <Formik initialValues = {{project : ''}} onSubmit={data=>{
+        <Formik initialValues = {{name : ''}} onSubmit={data=>{
           addingProject(data);
         }}>
           {({values,handleChange,handleBlur,handleSubmit})=>(
@@ -87,8 +103,8 @@ function Aside({ parentCallBack, open, classes }) {
                 className={classes.margin}
                 label="Project Name"
                 variant="outlined"
-                name="project"
-                value={values.project}
+                name="name"
+                value={values.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 />
@@ -113,12 +129,12 @@ function Aside({ parentCallBack, open, classes }) {
         Projects
       </Typography>
       <List>
-        {projectList.map((text, index) => (
-          <ListItem button key={text}>
+        {projectList.map((project, index) => (
+          <ListItem button key={project._id} onClick={(event)=>loadTasksByProject(project)}>
             <ListItemIcon>
               {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
             </ListItemIcon>
-            <ListItemText primary={text} />
+            <ListItemText primary={project.name}/>
           </ListItem>
         ))}
       </List>

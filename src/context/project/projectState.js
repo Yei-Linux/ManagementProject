@@ -2,7 +2,7 @@ import React, { useReducer } from 'react';
 import contextProject from './projectContext';
 import reducerProject from './projectReducer'
 
-import { NEW_PROJECT_FORM,GET_PROJECT_LIST,ADD_PROJECT_TO_PROJECT_LIST } from '../types';
+import { NEW_PROJECT_FORM,SET_PROJECT_LIST } from '../types';
 
 function ProjectState(props) {
     const initialState = {
@@ -19,9 +19,9 @@ function ProjectState(props) {
         });
     }
 
-    const getListProjects = projectList =>{
+    const setListProjects = projectList =>{
         dispatch({
-            type: GET_PROJECT_LIST,
+            type: SET_PROJECT_LIST,
             payload: projectList
         });
     }
@@ -32,7 +32,7 @@ function ProjectState(props) {
                 projectList: state.projectList,
                 isNewProject: state.isNewProject,
                 showNewProjectForm,
-                getListProjects
+                setListProjects
             }}
         >
             {props.children}

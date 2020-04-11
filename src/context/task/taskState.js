@@ -2,19 +2,27 @@ import React, { useReducer } from 'react';
 import contextTask from './taskContext';
 import reducerTask from './taskReducer'
 
-import { GET_TASK_LIST } from '../types';
+import { SET_TASK_LIST,SET_PROJECT_BY_TASKS } from '../types';
 
 function TaskState(props) {
     const initialState = {
-        taskList: []
+        taskList: [],
+        projectByTasks : null,
     }
 
     const [state,dispatch] = useReducer(reducerTask,initialState);
 
-    const getTasksList = tasksList =>{
+    const setTasksList = tasksList =>{
         dispatch({
-            type: GET_TASK_LIST,
+            type: SET_TASK_LIST,
             payload: tasksList
+        });
+    }
+
+    const setProjectByTasks = project => {
+        dispatch({
+            type: SET_PROJECT_BY_TASKS,
+            payload: project
         });
     }
 
@@ -22,7 +30,9 @@ function TaskState(props) {
         <contextTask.Provider
             value={{
                 taskList: state.taskList,
-                getTasksList
+                projectByTasks: state.projectByTasks,
+                setTasksList,
+                setProjectByTasks
             }}
         >
             {props.children}

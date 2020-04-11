@@ -1,4 +1,4 @@
-import { NEW_PROJECT_FORM,GET_PROJECT_LIST } from "../types";
+import { NEW_PROJECT_FORM,SET_PROJECT_LIST } from "../types";
 
 export default (state, action) => {
   switch (action.type) {
@@ -7,7 +7,7 @@ export default (state, action) => {
         ...state,
         isNewProject: action.payload
       };
-    case GET_PROJECT_LIST:
+    case SET_PROJECT_LIST:
       return {
         ...state,
         projectList: action.payload

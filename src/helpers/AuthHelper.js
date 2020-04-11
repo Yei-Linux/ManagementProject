@@ -5,3 +5,6 @@ export const haveToken = () => {
     return false;
 }
 
+export const saveAuthInfo = (token) =>{
+    localStorage.setItem('user_info',token);
+}
