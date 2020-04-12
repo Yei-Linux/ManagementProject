@@ -2,7 +2,7 @@ import React, { useReducer } from 'react';
 import contextTask from './taskContext';
 import reducerTask from './taskReducer'
 
-import { SET_TASK_LIST,SET_PROJECT_BY_TASKS } from '../types';
+import { SET_TASK_LIST,SET_PROJECT_BY_TASKS,CHANGE_TASK_SELECTED } from '../types';
 
 function TaskState(props) {
     const initialState = {
@@ -26,13 +26,21 @@ function TaskState(props) {
         });
     }
 
+    const changeTaskSelected = taskId => {
+        dispatch({
+            type: CHANGE_TASK_SELECTED,
+            payload: taskId
+        });
+    }
+
     return (
         <contextTask.Provider
             value={{
                 taskList: state.taskList,
                 projectByTasks: state.projectByTasks,
                 setTasksList,
-                setProjectByTasks
+                setProjectByTasks,
+                changeTaskSelected
             }}
         >
             {props.children}

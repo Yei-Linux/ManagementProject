@@ -19,5 +19,19 @@ export const taskListStyles = makeStyles(theme => ({
     marginTop: "45px",
     marginBottom: "15px",
     width: "450px"
+  },
+  listItem: {
+    backgroundColor: "#7e0cf5",
+    color: "white",
+    "&:hover, &:focus": {
+      backgroundColor: "#7e0cf5"
+    }
+  },
+  listItemText: {
+    color: "white"
+  },
+  buttonStatus: {
+    borderRadius: "2em",
+    marginRight: "10px"
   }
 }));

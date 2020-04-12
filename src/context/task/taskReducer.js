@@ -1,4 +1,4 @@
-import { SET_TASK_LIST, SET_PROJECT_BY_TASKS } from "../types";
+import { SET_TASK_LIST, SET_PROJECT_BY_TASKS, CHANGE_TASK_SELECTED } from "../types";
 
 export default (state, action) => {
   switch (action.type) {
@@ -12,6 +12,11 @@ export default (state, action) => {
         ...state,
         projectByTasks: action.payload
       };
+    case CHANGE_TASK_SELECTED:
+      return {
+        ...state,
+        taskList: state.taskList.map(task => task._id == action.payload ? {...task,selected: !task.selected} : task)
+      }
     default:
       return state;
   }

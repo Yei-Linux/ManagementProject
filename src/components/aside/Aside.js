@@ -50,9 +50,16 @@ function Aside({ parentCallBack, open, classes }) {
     });
   }
 
+  const addingFieldToTaskList = (taskList) =>{
+    taskList.forEach( task =>{
+      task['selected'] = false;
+    });
+    return taskList;
+  }
+
   const loadTasksByProject = (project) =>{
     getProjectWithTasks(project._id).then( tasksResponse => {
-      setTasksList(tasksResponse.data.projectWithTasks.tasks);
+      setTasksList(addingFieldToTaskList(tasksResponse.data.projectWithTasks.tasks));
       setProjectByTasks(tasksResponse.data.projectWithTasks.project);
     });
   }
