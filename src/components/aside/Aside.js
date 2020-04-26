@@ -19,50 +19,62 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Icon from "@material-ui/core/Icon";
 import SaveIcon from "@material-ui/icons/Save";
+import TextField from '@material-ui/core/TextField';
+import LabelImportantIcon from '@material-ui/icons/LabelImportant';
 
-import { CssTextField } from "./AsideMaterialStyle";
-import { Formik } from 'formik';
+import { Formik } from "formik";
 
-import contextProject from '../../context/project/projectContext';
-import contextTask from '../../context/task/taskContext';
-import { getProjects,addProject,getProjectWithTasks } from '../../services/projectService';
+import contextProject from "../../context/project/projectContext";
+import contextTask from "../../context/task/taskContext";
+import {
+  getProjects,
+  addProject,
+  getProjectWithTasks
+} from "../../services/projectService";
 
 function Aside({ parentCallBack, open, classes }) {
   const theme = useTheme();
 
-  const { isNewProject, projectList, showNewProjectForm, setListProjects } = useContext(contextProject);
+  const {
+    isNewProject,
+    projectList,
+    showNewProjectForm,
+    setListProjects
+  } = useContext(contextProject);
   const { setTasksList, setProjectByTasks } = useContext(contextTask);
 
-  useEffect(()=>{
+  useEffect(() => {
     loadProjects();
-  },[]);
+  }, []);
 
-  const loadProjects = () =>{
-    getProjects().then( projectsResponse => {
+  const loadProjects = () => {
+    getProjects().then(projectsResponse => {
       setListProjects(projectsResponse.projects);
     });
-  }
+  };
 
-  const addingProject = (data) => {
-    addProject(data).then( response => {
+  const addingProject = data => {
+    addProject(data).then(response => {
       loadProjects();
       showNewProjectForm(false);
     });
-  }
+  };
 
-  const addingFieldToTaskList = (taskList) =>{
-    taskList.forEach( task =>{
-      task['selected'] = false;
+  const addingFieldToTaskList = taskList => {
+    taskList.forEach(task => {
+      task["selected"] = false;
     });
     return taskList;
-  }
+  };
 
-  const loadTasksByProject = (project) =>{
-    getProjectWithTasks(project._id).then( tasksResponse => {
-      setTasksList(addingFieldToTaskList(tasksResponse.data.projectWithTasks.tasks));
+  const loadTasksByProject = project => {
+    getProjectWithTasks(project._id).then(tasksResponse => {
+      setTasksList(
+        addingFieldToTaskList(tasksResponse.data.projectWithTasks.tasks)
+      );
       setProjectByTasks(tasksResponse.data.projectWithTasks.project);
     });
-  }
+  };
 
   return (
     <Drawer
@@ -76,9 +88,9 @@ function Aside({ parentCallBack, open, classes }) {
     >
       <div className={classes.drawerHeader}>
         <Typography variant="h6" noWrap className={classes.text}>
-          Tasks
+          Yei Linux
         </Typography>
-        <IconButton onClick={parentCallBack}>
+        <IconButton onClick={parentCallBack} className={classes.icon}>
           {theme.direction === "ltr" ? (
             <ChevronLeftIcon />
           ) : (
@@ -88,38 +100,43 @@ function Aside({ parentCallBack, open, classes }) {
       </div>
 
       <Divider />
-      
+
       <Button
         variant="contained"
         color="secondary"
         className={classes.button}
         onClick={() => showNewProjectForm(true)}
-        startIcon={<Icon color="primary">add_circle</Icon>}
+        startIcon={<Icon className={classes.iconAdd}>add_circle</Icon>}
       >
         New Project
       </Button>
 
-      {
-        isNewProject && 
-        <Formik initialValues = {{name : ''}} onSubmit={data=>{
-          addingProject(data);
-        }}>
-          {({values,handleChange,handleBlur,handleSubmit})=>(
-            <form onSubmit = {handleSubmit}>
-                <CssTextField
+      {isNewProject && (
+        <Formik
+          initialValues={{ name: "" }}
+          onSubmit={data => {
+            addingProject(data);
+          }}
+        >
+          {({ values, handleChange, handleBlur, handleSubmit }) => (
+            <form onSubmit={handleSubmit} className={classes.form}>
+              <TextField
                 className={classes.margin}
                 label="Project Name"
-                variant="outlined"
+                variant="filled"
                 name="name"
                 value={values.name}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                />
-                <Button
+                InputProps={{
+                  className: classes.input,disableUnderline: true
+                }}
+              />
+              <Button
+                className={classes.buttonAddProject}
                 variant="contained"
                 color="primary"
                 size="small"
-                className={classes.button}
                 startIcon={<SaveIcon />}
                 type="submit"
               >
@@ -128,24 +145,27 @@ function Aside({ parentCallBack, open, classes }) {
             </form>
           )}
         </Formik>
-      }
-      
+      )}
+
       <Divider />
 
-      <Typography variant="h6" noWrap className={classes.text}>
-        Projects
-      </Typography>
       <List>
         {projectList.map((project, index) => (
-          <ListItem button key={project._id} onClick={(event)=>loadTasksByProject(project)}>
+          <ListItem
+            button
+            key={project._id}
+            onClick={event => loadTasksByProject(project)}
+          >
             <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              <LabelImportantIcon />
             </ListItemIcon>
-            <ListItemText primary={project.name}/>
+            <ListItemText primary={
+              <Typography className={classes.textSecondary}>
+                  {project.name}
+              </Typography>}/>
           </ListItem>
         ))}
       </List>
-
     </Drawer>
   );
 }

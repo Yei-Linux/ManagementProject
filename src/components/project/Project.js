@@ -1,22 +1,32 @@
-import React from "react";
+import React, { Fragment } from "react";
+import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import PropTypes from "prop-types";
+
+import { Link } from "react-router-dom";
 
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
-import AddTask from './AddTask/AddTask';
-import ListTask from "./ListTask/ListTask";
+import AddTask from "./AddTask/AddTask";
+import ListSection from "./ListSections/ListSections";
 
-
-function Project({ open , classes}) {
+function Project({ open, classes }) {
   return (
-    <main
-      className={clsx(classes.content, {
-        [classes.contentShift]: open
-      })}
-    >
-      <AddTask />
-      <ListTask />
-    </main>
+    <div className={classes.mainStyle}>
+      <div
+        className={clsx(classes.content,classes.content1, {
+          [classes.contentShift]: open
+        })}
+      >
+        <AddTask />
+      </div>
+      <div
+        className={clsx(classes.content,classes.content2, {
+          [classes.contentShift]: open
+        })}
+      >
+        <ListSection />
+      </div>
+    </div>
   );
 }
 

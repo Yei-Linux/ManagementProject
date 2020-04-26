@@ -1,8 +1,12 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
 
 import { useHomeStyles } from "./HomeMaterialStyle";
+import Breadcrumbs from "@material-ui/core/Breadcrumbs";
+import PropTypes from "prop-types";
+
+import Typography from "@material-ui/core/Typography";
+import { Link } from "react-router-dom";
 
 import Aside from "../../components/aside/Aside";
 import TopBar from "../../components/bar/TopBar";
@@ -30,7 +34,12 @@ function ManagmentHome(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <TopBar logout = {logOut} parentCallBack={handleDrawerOpen} open={open} classes={classes} />
+      <TopBar
+        logout={logOut}
+        parentCallBack={handleDrawerOpen}
+        open={open}
+        classes={classes}
+      />
       <Aside parentCallBack={handleDrawerClose} open={open} classes={classes} />
       <Project open={open} classes={classes} />
     </div>

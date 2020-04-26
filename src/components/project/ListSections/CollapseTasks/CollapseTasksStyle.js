@@ -1,12 +1,11 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const collapseStyles = makeStyles(theme => ({
+export const collapTaskseStyles = makeStyles(theme => ({
   collapse: {
-    backgroundColor: "#f2ed6f"
+    backgroundColor: "#d4ebd0"
   },
   root: {
-    width: "100%",
-    maxWidth: 500,
+    width: "85%",
     margin: "auto",
     marginTop: "50px",
     marginBottom: "50px",
@@ -18,6 +17,9 @@ export const collapseStyles = makeStyles(theme => ({
     marginBottom: "15px",
     width: "50%"
   },
+  textField: {
+    width: "100%"
+  },
   buttonSubmit: {
     display: "flex",
     margin: "auto",
@@ -25,4 +27,19 @@ export const collapseStyles = makeStyles(theme => ({
     marginBottom: "15px",
     width: "50%"
   },
+
+  listItem: {
+    width: "100%"
+  },
+  listItemIcon: {
+    marginRight: "20px"
+  },
+
+  badge: {
+    marginRight: "20px"
+  },
+  date: {
+    marginRight: "20px"
+  }
+
 }));

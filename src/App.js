@@ -9,37 +9,40 @@ import { GuardProvider, GuardedRoute } from "react-router-guards";
 
 import ProjectState from "./context/project/projectState";
 import TaskState from "./context/task/taskState";
+import DrawerState from "./context/drawer/drawerState";
 
 function App() {
   return (
     <ProjectState>
-      <TaskState>
-        <Router>
-          <Fragment>
-            <Switch>
-              <GuardProvider guards={[notLogin]}>
-                <GuardedRoute
-                  exact
-                  path="/"
-                  render={props => <Login {...props} />}
-                />
-                <GuardedRoute
-                  exact
-                  path="/signup"
-                  render={props => <Login {...props} />}
-                />
-                <GuardProvider guards={[requireSignIn]}>
+      <DrawerState>
+        <TaskState>
+          <Router>
+            <Fragment>
+              <Switch>
+                <GuardProvider guards={[notLogin]}>
                   <GuardedRoute
                     exact
-                    path="/home"
-                    render={props => <ManagmentHome {...props} />}
+                    path="/"
+                    render={props => <Login {...props} />}
                   />
+                  <GuardedRoute
+                    exact
+                    path="/signup"
+                    render={props => <Login {...props} />}
+                  />
+                  <GuardProvider guards={[requireSignIn]}>
+                    <GuardedRoute
+                      exact
+                      path="/home"
+                      render={props => <ManagmentHome {...props} />}
+                    />
+                  </GuardProvider>
                 </GuardProvider>
-              </GuardProvider>
-            </Switch>
-          </Fragment>
-        </Router>
-      </TaskState>
+              </Switch>
+            </Fragment>
+          </Router>
+        </TaskState>
+      </DrawerState>
     </ProjectState>
   );
 }

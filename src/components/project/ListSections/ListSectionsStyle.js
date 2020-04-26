@@ -1,9 +1,10 @@
 import { makeStyles } from "@material-ui/core/styles";
 
-export const taskListStyles = makeStyles(theme => ({
+export const sectionListStyles = makeStyles(theme => ({
   root: {
     width: "100%",
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.paper,
+    marginTop: "30px"
   },
   button: {
     marginLeft: "10px",
@@ -21,14 +22,21 @@ export const taskListStyles = makeStyles(theme => ({
     width: "450px"
   },
   listItem: {
-    backgroundColor: "#7e0cf5",
+    backgroundColor: "#8ec6c5",
     color: "white",
     "&:hover, &:focus": {
-      backgroundColor: "#7e0cf5"
+      backgroundColor: "#8ec6c5"
     }
   },
+  listItemIcon: {
+    color: "black",
+    backgroundColor: "#8ec6c5",
+    marginRight: "20px"
+  },
   listItemText: {
-    color: "white"
+    color: "white",
+    fontFamily: "inherit",
+    fontStyle: "cursive"
   },
   buttonStatus: {
     borderRadius: "2em",

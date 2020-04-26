@@ -6,22 +6,26 @@ export const addTaskStyles = makeStyles({
   },
   form: {
     maxWidth: "100%",
-    padding: "40px"
+    display: "flex",
+    justifyContent: "space-between"
   },
   formControl:{
-    display: "block",
-    margin: "auto",
-    width: "50%"
+    width: "450px",
+    marginTop: "-15px"
   },
   input: {
-    width: "100%"
+    width: "100%",
+    margin: 0,
+    borderColor: "purple",
+    fontFamily: "inherit"
   },
   buttonSubmit: {
-    display: "flex",
-    margin: "auto",
-    marginTop: "25px",
-    marginBottom: "15px",
-    width: "450px"
+    width: "175px",
+    height: "35px",
+    color: "white"
+  },  
+  iconAdd:{
+    color: "#29c7ac"
   },
   chip: {
     margin: "auto"

@@ -38,10 +38,9 @@ function AddTask() {
             <form className={classes.form} onSubmit = {handleSubmit}>
               <FormControl className={clsx(classes.formControl)}>
                 <TextField
-                  label="Task..."
+                  label="Write your task"
                   className={clsx(classes.input)}
                   id="margin-normal"
-                  helperText="Think and add your task"
                   margin="normal"
                   name="name"
                   value={values.name}
@@ -53,7 +52,7 @@ function AddTask() {
                 variant="contained"
                 color="secondary"
                 className={classes.buttonSubmit}
-                startIcon={<Icon color="primary">add_circle</Icon>}
+                startIcon={<Icon color="primary" className={classes.iconAdd}>add_circle</Icon>}
                 type="submit"
               >
                 Add Task
