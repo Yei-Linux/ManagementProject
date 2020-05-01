@@ -18,15 +18,30 @@ AddTask.propTypes = {};
 
 function AddTask() {
   const classes = addTaskStyles();
-  const { setTasksList,projectByTasks } = useContext(contextTask);
+  const sections = [
+    { id: "5eab3a6e6c3f964a8ccb0136", name: "To Do" },
+    { id: "5eab3a786c3f964a8ccb0137", name: "Doing" },
+    { id: "5eab3a7d6c3f964a8ccb0138", name: "Done" }
+  ];
 
-  const addingTaskByProject = data =>{
-    addTask({name: data.name,project: projectByTasks._id}).then( response => {
-      getProjectWithTasks(projectByTasks._id).then( tasksResponse => {
-        setTasksList(tasksResponse.data.projectWithTasks.tasks);
-      });
-    });
+  const { setTasksList,setProjectByTasks,projectByTasks } = useContext(contextTask);
+
+  const addingTaskByProject = async data =>{
+    await addTask({name: data.name,status: sections[0].id,project: projectByTasks._id});
+    await loadTasksByProject(projectByTasks._id);
   }
+
+  const addingFieldToTaskList = taskList => {
+    taskList.forEach(task => {task["selected"] = false});
+    return taskList;
+  };
+
+  const loadTasksByProject = async projectId => {
+    let tasksResponse = await getProjectWithTasks(projectId);
+    setTasksList(addingFieldToTaskList(tasksResponse.data.projectWithTasks[0].tasksList));
+    let projectResponse = tasksResponse.data.projectWithTasks[0];
+    setProjectByTasks({"_id": projectResponse._id, "name": projectResponse.name, "user": projectResponse.user, "tasks": projectResponse.taskList});
+  };
 
   return (
     <div>

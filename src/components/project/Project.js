@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
 import AddTask from "./AddTask/AddTask";
-import ListSection from "./ListSections/ListSections";
+import ListStatus from "./ListStatus/ListStatus";
 
 function Project({ open, classes }) {
   return (
@@ -24,7 +24,7 @@ function Project({ open, classes }) {
           [classes.contentShift]: open
         })}
       >
-        <ListSection />
+        <ListStatus />
       </div>
     </div>
   );

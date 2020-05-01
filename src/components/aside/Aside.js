@@ -44,37 +44,30 @@ function Aside({ parentCallBack, open, classes }) {
   const { setTasksList, setProjectByTasks } = useContext(contextTask);
 
   useEffect(() => {
-    loadProjects();
+    loadProjects(); 
   }, []);
 
-  const loadProjects = () => {
-    getProjects().then(projectsResponse => {
-      setListProjects(projectsResponse.projects);
-    });
+  const loadProjects = async () => {
+    let projectsResponse = await getProjects();
+    setListProjects(projectsResponse.projects);
   };
 
-  const addingProject = data => {
-    addProject(data).then(response => {
-      loadProjects();
-      showNewProjectForm(false);
-    });
+  const addingProject = async data => {
+    await addProject(data);
+    await loadProjects();
+    await showNewProjectForm(false);
   };
 
   const addingFieldToTaskList = taskList => {
-    taskList.forEach(task => {
-      task["selected"] = false;
-    });
+    taskList.forEach(task => {task["selected"] = false});
     return taskList;
   };
 
-  const loadTasksByProject = project => {
-    getProjectWithTasks(project._id).then(tasksResponse => {
-      setTasksList(
-        addingFieldToTaskList(tasksResponse.data.projectWithTasks[0].tasksList)
-      );
-      let project = tasksResponse.data.projectWithTasks[0];
-      setProjectByTasks({"_id": project._id, "name": project.name, "user": project.user, "tasks": project.taskList});
-    });
+  const loadTasksByProject = async project => {
+    let tasksResponse = await getProjectWithTasks(project._id);
+    setTasksList(addingFieldToTaskList(tasksResponse.data.projectWithTasks[0].tasksList));
+    let projectResponse = tasksResponse.data.projectWithTasks[0];
+    setProjectByTasks({"_id": projectResponse._id, "name": projectResponse.name, "user": projectResponse.user, "tasks": projectResponse.taskList});
   };
 
   return (

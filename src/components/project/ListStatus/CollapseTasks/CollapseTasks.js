@@ -47,7 +47,7 @@ function CollapseTasks({ section, parentTaskCallBack }) {
         <List className={classes.root}>
           {taskList &&
             taskList.map((task, index) => (
-              <Fragment>
+              <Fragment key={task._id}>
                 {task.status == section.id && <ListItem button key={task._id} className={classes.listItem} 
                   onClick={ event => clickOnTask(task._id)} >
                   <ListItemAvatar>

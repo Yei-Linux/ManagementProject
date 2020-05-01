@@ -28,5 +28,9 @@ export const drawerStyles = makeStyles(theme => ({
   cardHeaderContent: {
     display: "flex",
     justifyContent: "space-between"
+  },
+  cardContent: {
+    paddingTop: "25px",
+    paddingBottom: "25px"
   }
 }));

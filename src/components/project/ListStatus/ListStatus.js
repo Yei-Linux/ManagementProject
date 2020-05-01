@@ -37,11 +37,7 @@ function ListSection() {
   }
 
   const changeSelectedSection = sectionId => {
-    let sectionsChanged = sectionState.map(section =>
-      section.id == sectionId
-        ? { ...section, selected: !section.selected }
-        : section
-    );
+    let sectionsChanged = sectionState.map(section => section.id == sectionId ? { ...section, selected: !section.selected } : section);
     updateSectionState(sectionsChanged);
   };
 
@@ -54,7 +50,7 @@ function ListSection() {
       <List className={classes.root}>
         {sectionState &&
           sectionState.map((section, index) => (
-            <Fragment>
+            <Fragment key={section.id}>
               <ListItem button key={section.id} className={classes.listItem}>
                 <AssignmentTurnedInIcon className={classes.listItemIcon} />
 
