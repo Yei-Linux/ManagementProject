@@ -16,20 +16,25 @@ import TaskDrawer from "./CollapseTasks/TaskDrawer/TaskDrawer";
 import contextDrawer from "../../../context/drawer/drawerContext";
 
 const sections = [
-  { id: 1, name: "To Do", selected: true },
-  { id: 2, name: "Doing", selected: false },
-  { id: 3, name: "Done", selected: false }
+  { id: "5eab3a6e6c3f964a8ccb0136", name: "To Do", selected: true },
+  { id: "5eab3a786c3f964a8ccb0137", name: "Doing", selected: false },
+  { id: "5eab3a7d6c3f964a8ccb0138", name: "Done", selected: false }
 ];
 
 function ListSection() {
   const classes = sectionListStyles();
   const [sectionState, updateSection] = useState(sections);
+  const [taskSelected,updateTaskSelected] = useState(null);
 
   const {isOpen,clickOnDrawer} = useContext(contextDrawer);
 
   const updateSectionState = data => {
     updateSection(data);
   };
+
+  const updateTaskSelectedState = data => {
+    updateTaskSelected(data);
+  }
 
   const changeSelectedSection = sectionId => {
     let sectionsChanged = sectionState.map(section =>
@@ -39,6 +44,10 @@ function ListSection() {
     );
     updateSectionState(sectionsChanged);
   };
+
+  const setTaskSelected = (data) => {
+    updateTaskSelectedState(data);
+  }
 
   return (
     <Fragment>
@@ -57,11 +66,11 @@ function ListSection() {
                 {section.selected ? <ExpandLess /> : <ExpandMore />}
               </ListItem>
 
-              <CollapseTasks section={section} />
+              <CollapseTasks section={section} parentTaskCallBack={setTaskSelected}/>
             </Fragment>
           ))}
       </List>
-      <TaskDrawer open={isOpen}/>
+      <TaskDrawer open={isOpen} task = {taskSelected}/>
     </Fragment>
   );
 }

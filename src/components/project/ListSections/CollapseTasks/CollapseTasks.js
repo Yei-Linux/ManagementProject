@@ -14,9 +14,11 @@ import Avatar from "@material-ui/core/Avatar";
 import Badge from "@material-ui/core/Badge";
 import MailIcon from "@material-ui/icons/Mail";
 
+import { getTaskById } from '../../../../services/taskService';
+
 import Typography from "@material-ui/core/Typography";
 
-function CollapseTasks({ section }) {
+function CollapseTasks({ section, parentTaskCallBack }) {
   const classes = collapTaskseStyles();
 
   const {
@@ -27,6 +29,12 @@ function CollapseTasks({ section }) {
   } = useContext(contextTask);
 
   const {isOpen,clickOnDrawer} = useContext(contextDrawer);
+
+  const clickOnTask = async (taskId) => {
+    let taskSelected = await getTaskById(taskId);
+    parentTaskCallBack(taskSelected.data.task);
+    clickOnDrawer();
+  }
 
   return (
     <Collapse
@@ -40,7 +48,8 @@ function CollapseTasks({ section }) {
           {taskList &&
             taskList.map((task, index) => (
               <Fragment>
-                <ListItem button key={task._id} className={classes.listItem} onClick={clickOnDrawer}>
+                {task.status == section.id && <ListItem button key={task._id} className={classes.listItem} 
+                  onClick={ event => clickOnTask(task._id)} >
                   <ListItemAvatar>
                     <Avatar alt="Cindy Baker" src="/img/taskIcon.png" />
                   </ListItemAvatar>
@@ -60,7 +69,7 @@ function CollapseTasks({ section }) {
                   >
                     <Avatar alt="Cindy Baker" src="/img/comment.png" />
                   </Badge>
-                </ListItem>
+                </ListItem>}
               </Fragment>
             ))}
         </List>

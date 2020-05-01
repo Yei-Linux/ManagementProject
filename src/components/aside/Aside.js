@@ -70,9 +70,10 @@ function Aside({ parentCallBack, open, classes }) {
   const loadTasksByProject = project => {
     getProjectWithTasks(project._id).then(tasksResponse => {
       setTasksList(
-        addingFieldToTaskList(tasksResponse.data.projectWithTasks.tasks)
+        addingFieldToTaskList(tasksResponse.data.projectWithTasks[0].tasksList)
       );
-      setProjectByTasks(tasksResponse.data.projectWithTasks.project);
+      let project = tasksResponse.data.projectWithTasks[0];
+      setProjectByTasks({"_id": project._id, "name": project.name, "user": project.user, "tasks": project.taskList});
     });
   };
 

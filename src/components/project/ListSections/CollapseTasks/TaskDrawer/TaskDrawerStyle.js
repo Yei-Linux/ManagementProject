@@ -24,5 +24,9 @@ export const drawerStyles = makeStyles(theme => ({
   label: {
     marginRight: "20px",
     width: "150px"
+  },
+  cardHeaderContent: {
+    display: "flex",
+    justifyContent: "space-between"
   }
 }));
