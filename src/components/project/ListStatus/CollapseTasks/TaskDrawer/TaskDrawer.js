@@ -48,6 +48,8 @@ import Divider from "@material-ui/core/Divider";
 import { updateTask } from "../../../../../services/taskService";
 import { getProjectWithTasks } from "../../../../../services/projectService";
 
+import CommmentsByTask from './CommentsByTask/CommmentsByTask';
+
 function TaskDrawer({ open, task }) {
   const classes = drawerStyles();
   const sections = [
@@ -330,6 +332,8 @@ function TaskDrawer({ open, task }) {
               </form>
             )}
           </Formik>
+
+          <CommmentsByTask comments = {task.commentsList}/>
         </SwipeableDrawer>
       )}
     </Fragment>

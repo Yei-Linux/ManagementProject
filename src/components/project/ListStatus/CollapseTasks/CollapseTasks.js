@@ -32,7 +32,7 @@ function CollapseTasks({ section, parentTaskCallBack }) {
 
   const clickOnTask = async (taskId) => {
     let taskSelected = await getTaskById(taskId);
-    parentTaskCallBack(taskSelected.data.task);
+    parentTaskCallBack(taskSelected.data.task[0]);
     clickOnDrawer();
   }
 
