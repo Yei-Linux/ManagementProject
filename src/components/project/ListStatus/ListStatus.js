@@ -43,6 +43,7 @@ function ListSection() {
 
   const setTaskSelected = (data) => {
     updateTaskSelectedState(data);
+    
   }
 
   return (

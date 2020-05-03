@@ -4,6 +4,7 @@ import Collapse from "@material-ui/core/Collapse";
 
 import contextTask from "../../../../context/task/taskContext";
 import contextDrawer from "../../../../context/drawer/drawerContext";
+import contextSocket from "../../../../context/socket/socketContext";
 
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -28,10 +29,14 @@ function CollapseTasks({ section, parentTaskCallBack }) {
     changeTaskSelected
   } = useContext(contextTask);
 
+  const { socket,setComments} = useContext(contextSocket);
+
   const {isOpen,clickOnDrawer} = useContext(contextDrawer);
 
   const clickOnTask = async (taskId) => {
+    socket.emit('SUSCRIBE',taskId);
     let taskSelected = await getTaskById(taskId);
+    setComments(taskSelected.data.task[0].commentsList);
     parentTaskCallBack(taskSelected.data.task[0]);
     clickOnDrawer();
   }

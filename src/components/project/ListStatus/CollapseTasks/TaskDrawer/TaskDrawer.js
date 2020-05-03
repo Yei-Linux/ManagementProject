@@ -333,7 +333,7 @@ function TaskDrawer({ open, task }) {
             )}
           </Formik>
 
-          <CommmentsByTask comments = {task.commentsList}/>
+          <CommmentsByTask taskId= {task._id}/>
         </SwipeableDrawer>
       )}
     </Fragment>

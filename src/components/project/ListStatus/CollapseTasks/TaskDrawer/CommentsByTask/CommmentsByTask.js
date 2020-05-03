@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from "@material-ui/core/Divider";
@@ -12,8 +12,32 @@ import TextField from "@material-ui/core/TextField";
 import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
 
-function CommmentsByTask({ comments }) {
+import io from "socket.io-client";
+
+import contextSocket from '../../../../../../context/socket/socketContext';
+
+function CommmentsByTask({ taskId }) {
   const classes = commentsStyle();
+  const [comment,commentUpdate] = useState('');
+
+  const { socket,comments,setComments} = useContext(contextSocket);
+
+  const sendMessageToTask = (e) => {
+    commentUpdate(comment);
+    socket.emit('SEND_COMMENTS',{
+      task: taskId,
+      comment: comment
+    });
+    commentUpdate('');
+  }
+
+  const updateComment = e => {
+    commentUpdate(e.target.value);
+  }
+
+  socket.on('COMMENTS_OF_TASK',(data) => {
+    setComments(data['comment']);
+  });
 
   return (
     <Fragment>
@@ -48,6 +72,9 @@ function CommmentsByTask({ comments }) {
         rows={4}
         placeholder="Write a comment..."
         variant="outlined"
+        name = "comment"
+        value = {comment}
+        onChange = {updateComment}
       />
       <div className={classes.divButton}>
         <Button
@@ -56,6 +83,7 @@ function CommmentsByTask({ comments }) {
           size="small"
           className={classes.button}
           startIcon={<SaveIcon />}
+          onClick = {sendMessageToTask}
         >
           Save
         </Button>
