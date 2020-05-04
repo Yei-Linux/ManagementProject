@@ -13,7 +13,7 @@ import { Formik } from 'formik';
 
 import { addTask } from '../../../services/taskService';
 import { getProjectWithTasks } from '../../../services/projectService';
-
+import * as yup from 'yup';
 AddTask.propTypes = {};
 
 function AddTask() {
@@ -43,13 +43,17 @@ function AddTask() {
     setProjectByTasks({"_id": projectResponse._id, "name": projectResponse.name, "user": projectResponse.user, "tasks": projectResponse.taskList});
   };
 
+  const validationSchema = yup.object().shape({
+    name: yup.string().required().label("Task")
+  });
+
   return (
     <div>
         <Formik initialValues = {{name : ''}} onSubmit={(data,{resetForm})=>{
           addingTaskByProject(data);
           resetForm({});
-        }}>
-          {({values,handleChange,handleBlur,handleSubmit})=>(
+        }} validationSchema = {validationSchema}>
+          {({values,handleChange,handleBlur,handleSubmit,errors})=>(
             <form className={classes.form} onSubmit = {handleSubmit}>
               <FormControl className={clsx(classes.formControl)}>
                 <TextField
@@ -62,6 +66,7 @@ function AddTask() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
+                {errors.name && <div className={classes.errorMessage}>{errors.name}</div>}
               </FormControl>
               <Button
                 variant="contained"

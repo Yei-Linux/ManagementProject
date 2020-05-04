@@ -29,5 +29,9 @@ export const addTaskStyles = makeStyles({
   },
   chip: {
     margin: "auto"
+  },
+  errorMessage: {
+    color: 'red',
+    marginTop: '5px'
   }
 });

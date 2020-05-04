@@ -19,6 +19,9 @@ import { getTaskById } from '../../../../services/taskService';
 
 import Typography from "@material-ui/core/Typography";
 
+import io from "socket.io-client";
+const socketUrl = "http://localhost:4000";
+
 function CollapseTasks({ section, parentTaskCallBack }) {
   const classes = collapTaskseStyles();
 
@@ -29,17 +32,21 @@ function CollapseTasks({ section, parentTaskCallBack }) {
     changeTaskSelected
   } = useContext(contextTask);
 
-  const { socket,setComments} = useContext(contextSocket);
-
+  const { socket,savingSocket,setComments} = useContext(contextSocket);
   const {isOpen,clickOnDrawer} = useContext(contextDrawer);
 
   const clickOnTask = async (taskId) => {
-    socket.emit('SUSCRIBE',taskId);
+    initSocket();
     let taskSelected = await getTaskById(taskId);
     setComments(taskSelected.data.task[0].commentsList);
     parentTaskCallBack(taskSelected.data.task[0]);
     clickOnDrawer();
   }
+
+  const initSocket = () => {
+    const socket = io.connect(socketUrl);
+    savingSocket(socket);
+  };
 
   return (
     <Collapse
@@ -50,7 +57,7 @@ function CollapseTasks({ section, parentTaskCallBack }) {
     >
       <Fragment>
         <List className={classes.root}>
-          {taskList &&
+          {taskList && 
             taskList.map((task, index) => (
               <Fragment key={task._id}>
                 {task.status == section.id && <ListItem button key={task._id} className={classes.listItem} 
@@ -76,7 +83,8 @@ function CollapseTasks({ section, parentTaskCallBack }) {
                   </Badge>
                 </ListItem>}
               </Fragment>
-            ))}
+            ))
+          }
         </List>
       </Fragment>
     </Collapse>

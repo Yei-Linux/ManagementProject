@@ -14,24 +14,9 @@ import Project from "../../components/project/Project";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 
-import contextSocket from '../../context/socket/socketContext';
-
-import io from "socket.io-client";
-const socketUrl = "http://localhost:4000";
-
 function ManagmentHome(props) {
   const classes = useHomeStyles();
   const [open, setOpen] = React.useState(false);
-  const { savingSocket } = useContext(contextSocket);
-
-  useEffect(() => {
-    initSocket();
-  }, []);
-
-  const initSocket = () => {
-    const socket = io.connect(socketUrl);
-    savingSocket(socket);
-  };
 
   const handleDrawerOpen = () => {
     setOpen(true);

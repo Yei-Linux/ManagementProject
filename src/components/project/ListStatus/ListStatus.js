@@ -1,4 +1,4 @@
-import React, { useState, Fragment,useContext } from "react";
+import React, { useState, Fragment,useContext, useEffect } from "react";
 import { sectionListStyles } from "./ListSectionsStyle";
 import CollapseTasks from "./CollapseTasks/CollapseTasks";
 
@@ -14,6 +14,7 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 
 import TaskDrawer from "./CollapseTasks/TaskDrawer/TaskDrawer";
 import contextDrawer from "../../../context/drawer/drawerContext";
+import contextSocket from "../../../context/socket/socketContext";
 
 const sections = [
   { id: "5eab3a6e6c3f964a8ccb0136", name: "To Do", selected: true },
@@ -27,6 +28,21 @@ function ListSection() {
   const [taskSelected,updateTaskSelected] = useState(null);
 
   const {isOpen,clickOnDrawer} = useContext(contextDrawer);
+  const { socket,setComments} = useContext(contextSocket);
+  const [taskId,updateTaskId] = useState('');
+
+  useEffect(()=>{
+    if( socket && !isOpen ){
+      socket.disconnect();
+    }
+    if( socket && isOpen ){
+      socket.emit('SUSCRIBE',taskId);
+    }
+  },[isOpen]);
+
+  const setTaskId = (taskId) =>{
+    updateTaskId(taskId);
+  }
 
   const updateSectionState = data => {
     updateSection(data);
@@ -43,7 +59,7 @@ function ListSection() {
 
   const setTaskSelected = (data) => {
     updateTaskSelectedState(data);
-    
+    setTaskId(data._id);
   }
 
   return (

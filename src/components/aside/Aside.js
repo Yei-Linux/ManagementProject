@@ -31,6 +31,7 @@ import {
   addProject,
   getProjectWithTasks
 } from "../../services/projectService";
+import * as yup from 'yup';
 
 function Aside({ parentCallBack, open, classes }) {
   const theme = useTheme();
@@ -69,6 +70,10 @@ function Aside({ parentCallBack, open, classes }) {
     let projectResponse = tasksResponse.data.projectWithTasks[0];
     setProjectByTasks({"_id": projectResponse._id, "name": projectResponse.name, "user": projectResponse.user, "tasks": projectResponse.taskList});
   };
+
+  const validationSchema = yup.object().shape({
+    name: yup.string().required().label("Project")
+  });
 
   return (
     <Drawer
@@ -111,8 +116,8 @@ function Aside({ parentCallBack, open, classes }) {
           onSubmit={data => {
             addingProject(data);
           }}
-        >
-          {({ values, handleChange, handleBlur, handleSubmit }) => (
+          validationSchema = {validationSchema}>
+          {({ values, handleChange, handleBlur, handleSubmit,errors }) => (
             <form onSubmit={handleSubmit} className={classes.form}>
               <TextField
                 className={classes.margin}
@@ -126,6 +131,7 @@ function Aside({ parentCallBack, open, classes }) {
                   className: classes.input,disableUnderline: true
                 }}
               />
+              {errors.name && <div className={classes.errorMessage}>{errors.name}</div>}
               <Button
                 className={classes.buttonAddProject}
                 variant="contained"

@@ -21,6 +21,9 @@ export const drawerStyles = makeStyles(theme => ({
     width: "100%",
     marginTop: "-12px !important" 
   },
+  priorityClass: {
+    width: '100px'
+  },
   label: {
     marginRight: "20px",
     width: "150px"
@@ -32,5 +35,9 @@ export const drawerStyles = makeStyles(theme => ({
   cardContent: {
     paddingTop: "25px",
     paddingBottom: "25px"
+  },
+  errorMessage: {
+    color: 'red',
+    marginTop: '5px'
   }
 }));

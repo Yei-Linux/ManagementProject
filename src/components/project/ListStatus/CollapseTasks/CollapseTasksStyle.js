@@ -40,6 +40,10 @@ export const collapTaskseStyles = makeStyles(theme => ({
   },
   date: {
     marginRight: "20px"
+  },
+  emptyTask: {
+    height: '500px',
+    backgroundImage:  "url('http://localhost:3000/img/emptyTasks.gif')",
+    backgroundSize: 'cover'
   }
-
 }));

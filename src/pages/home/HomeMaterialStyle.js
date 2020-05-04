@@ -119,5 +119,9 @@ export const useHomeStyles = makeStyles(theme => ({
   },
   textSecondary: {
     fontFamily: "inherit"
+  },
+  errorMessage: {
+    color: '#29c7ac',
+    marginTop: '5px'
   }
 }));

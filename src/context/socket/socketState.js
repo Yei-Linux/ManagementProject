@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react';
 import contextSocket from './socketContext';
 import reducerSocket from './socketReducer';
-import { SAVING_SOCKET, SET_COMMENTS } from '../types';
+import { SAVING_SOCKET, SET_COMMENTS, ADD_COMMENT } from '../types';
 
 function SocketState(props) {
     const initialState = {
@@ -25,13 +25,21 @@ function SocketState(props) {
         });
     }
 
+    const addComment = (data) => {
+        dispatch({
+            type: ADD_COMMENT,
+            payload: data
+        });
+    }
+
     return (
         <contextSocket.Provider
             value={{
                 socket: state.socket,
                 comments: state.comments,
                 savingSocket,
-                setComments
+                setComments,
+                addComment
             }}
         >
             {props.children}

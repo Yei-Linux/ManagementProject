@@ -48,7 +48,10 @@ import Divider from "@material-ui/core/Divider";
 import { updateTask } from "../../../../../services/taskService";
 import { getProjectWithTasks } from "../../../../../services/projectService";
 
-import CommmentsByTask from './CommentsByTask/CommmentsByTask';
+import CommmentsByTask from "./CommentsByTask/CommmentsByTask";
+import * as yup from "yup";
+
+import clsx from "clsx";
 
 function TaskDrawer({ open, task }) {
   const classes = drawerStyles();
@@ -64,7 +67,9 @@ function TaskDrawer({ open, task }) {
     { id: "5eab3b31b14a583e60be17e5", name: "High" }
   ];
 
-  const { setTasksList, setProjectByTasks, projectByTasks } = useContext(contextTask);
+  const { setTasksList, setProjectByTasks, projectByTasks } = useContext(
+    contextTask
+  );
   const { clickOnDrawer } = useContext(contextDrawer);
 
   const [openSelect, setOpenSelect] = useState(false);
@@ -87,26 +92,34 @@ function TaskDrawer({ open, task }) {
   };
 
   const updateTaskOnSubmit = async data => {
-    data = (data.status == "5eab3a786c3f964a8ccb0137") ? addingInitializeDateAndDaysToFinish(data) : data;
+    data =
+      data.status == "5eab3a786c3f964a8ccb0137"
+        ? addingInitializeDateAndDaysToFinish(data)
+        : data;
     await updateTask(data, task._id);
     await loadTasksByProject(projectByTasks._id);
     clickOnDrawer();
   };
 
-  const addingInitializeDateAndDaysToFinish = (data) => {
+  const addingInitializeDateAndDaysToFinish = data => {
     data.initializedAt = new Date(Date.now());
-    data.daysToFinish = data.finishedAt.getDate() - data.initializedAt.getDate();
+    data.daysToFinish =
+      data.finishedAt.getDate() - data.initializedAt.getDate();
     return data;
-  }
+  };
 
   const addingFieldToTaskList = taskList => {
-    taskList.forEach(task => {task["selected"] = false});
+    taskList.forEach(task => {
+      task["selected"] = false;
+    });
     return taskList;
   };
 
   const loadTasksByProject = async projectId => {
     let tasksResponse = await getProjectWithTasks(projectId);
-    setTasksList(addingFieldToTaskList(tasksResponse.data.projectWithTasks[0].tasksList));
+    setTasksList(
+      addingFieldToTaskList(tasksResponse.data.projectWithTasks[0].tasksList)
+    );
     let projectResponse = tasksResponse.data.projectWithTasks[0];
     setProjectByTasks({
       _id: projectResponse._id,
@@ -124,10 +137,34 @@ function TaskDrawer({ open, task }) {
     return dateTime.replace("T", " ").replace("Z", " ");
   };
 
+  const validationSchema = yup.object().shape({
+    status: yup
+      .string()
+      .required()
+      .label("Status"),
+    finishedAt: yup
+      .string()
+      .required()
+      .label("Finished at"),
+    priority: yup
+      .string()
+      .required()
+      .label("priority"),
+    description: yup
+      .string()
+      .required()
+      .label("description")
+  });
+
   return (
     <Fragment>
       {task && (
-        <SwipeableDrawer anchor="right" open={open} onClose={clickOnDrawer} onOpen={open}>
+        <SwipeableDrawer
+          anchor="right"
+          open={open}
+          onClose={clickOnDrawer}
+          onOpen={open}
+        >
           <Formik
             initialValues={{
               name: task.name,
@@ -136,19 +173,21 @@ function TaskDrawer({ open, task }) {
               finishedAt: task.finishedAt
                 ? new Date(task.finishedAt)
                 : new Date(Date.now()),
-              priority: task.priority ? task.priority : '',
-              description: task.description ? task.description : ''
+              priority: task.priority ? task.priority : "",
+              description: task.description ? task.description : ""
             }}
             onSubmit={data => {
               updateTaskOnSubmit(data);
             }}
+            validationSchema={validationSchema}
           >
             {({
               values,
               handleChange,
               handleBlur,
               handleSubmit,
-              setFieldValue
+              setFieldValue,
+              errors
             }) => (
               <form onSubmit={handleSubmit} className={classes.form}>
                 <Card className={classes.root}>
@@ -245,6 +284,11 @@ function TaskDrawer({ open, task }) {
                             name="finishedAt"
                             value={values.finishedAt}
                           />
+                          {errors.finishedAt && (
+                            <div className={classes.errorMessage}>
+                              {errors.finishedAt}
+                            </div>
+                          )}
                         </MuiPickersUtilsProvider>
                       )}
                     </FormControl>
@@ -253,57 +297,72 @@ function TaskDrawer({ open, task }) {
                       <FormLabel className={classes.label} htmlFor="mi-campo">
                         Prioridad
                       </FormLabel>
-                      {task.status == "5eab3a7d6c3f964a8ccb0138" ? (
-                        <Input
-                          className={classes.input}
-                          inputProps={{ "aria-label": "priority" }}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          name="priority"
-                          value={getPriorityNameById(task.priority)}
-                          readOnly={true}
-                        />
-                      ) : (
-                        <Select
-                          className={classes.input}
-                          labelId="demo-controlled-open-select-label"
-                          id="demo-controlled-open-select"
-                          open={openSelectPriority}
-                          onClose={handleClosePriority}
-                          onOpen={handleOpenPriority}
-                          name="priority"
-                          value={values.priority}
-                          onChange={event => {
-                            setFieldValue("priority", event.target.value);
-                          }}
-                        >
-                          {priorities &&
-                            priorities.map(priorityItem => (
-                              <MenuItem value={priorityItem.id} key={priorityItem.id}>
-                                {priorityItem.name}
-                              </MenuItem>
-                            ))}
-                        </Select>
-                      )}
+                      <div className={clsx(classes.input)}>
+                        {task.status == "5eab3a7d6c3f964a8ccb0138" ? (
+                          <Input
+                            inputProps={{ "aria-label": "priority" }}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            name="priority"
+                            value={getPriorityNameById(task.priority)}
+                            readOnly={true}
+                          />
+                        ) : (
+                          <Select
+                            className={clsx(classes.priorityClass)}
+                            labelId="demo-controlled-open-select-label"
+                            id="demo-controlled-open-select"
+                            open={openSelectPriority}
+                            onClose={handleClosePriority}
+                            onOpen={handleOpenPriority}
+                            name="priority"
+                            value={values.priority}
+                            onChange={event => {
+                              setFieldValue("priority", event.target.value);
+                            }}
+                          >
+                            {priorities &&
+                              priorities.map(priorityItem => (
+                                <MenuItem
+                                  value={priorityItem.id}
+                                  key={priorityItem.id}
+                                >
+                                  {priorityItem.name}
+                                </MenuItem>
+                              ))}
+                          </Select>
+                        )}
+                        {errors.priority && (
+                          <div className={classes.errorMessage}>
+                            {errors.priority}
+                          </div>
+                        )}
+                      </div>
                     </FormControl>
 
                     <FormControl className={classes.formControl}>
                       <FormLabel className={classes.label} htmlFor="mi-campo">
                         Descripcion
                       </FormLabel>
-                      <Input
-                        className={classes.input}
-                        inputProps={{ "aria-label": "description" }}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        name="description"
-                        value={values.description}
-                        readOnly={
-                          task.status == "5eab3a7d6c3f964a8ccb0138"
-                            ? true
-                            : false
-                        }
-                      />
+                      <div className={classes.input}>
+                        <Input
+                          inputProps={{ "aria-label": "description" }}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          name="description"
+                          value={values.description}
+                          readOnly={
+                            task.status == "5eab3a7d6c3f964a8ccb0138"
+                              ? true
+                              : false
+                          }
+                        />
+                        {errors.description && (
+                          <div className={classes.errorMessage}>
+                            {errors.description}
+                          </div>
+                        )}
+                      </div>
                     </FormControl>
                   </CardContent>
 
@@ -319,9 +378,7 @@ function TaskDrawer({ open, task }) {
                       <Button
                         variant="contained"
                         color="secondary"
-                        startIcon={
-                          <UpdateIcon />
-                        }
+                        startIcon={<UpdateIcon />}
                         type="submit"
                       >
                         Update Task
@@ -333,7 +390,7 @@ function TaskDrawer({ open, task }) {
             )}
           </Formik>
 
-          <CommmentsByTask taskId= {task._id}/>
+          <CommmentsByTask taskId={task._id} />
         </SwipeableDrawer>
       )}
     </Fragment>

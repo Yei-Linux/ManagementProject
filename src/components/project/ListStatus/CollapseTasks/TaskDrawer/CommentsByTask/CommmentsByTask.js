@@ -12,32 +12,53 @@ import TextField from "@material-ui/core/TextField";
 import SaveIcon from "@material-ui/icons/Save";
 import Button from "@material-ui/core/Button";
 
-import io from "socket.io-client";
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import contextSocket from '../../../../../../context/socket/socketContext';
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 function CommmentsByTask({ taskId }) {
   const classes = commentsStyle();
-  const [comment,commentUpdate] = useState('');
 
-  const { socket,comments,setComments} = useContext(contextSocket);
+  const { socket,comments,setComments,addComment} = useContext(contextSocket);
+  const [open, setOpen] = React.useState(false);
 
-  const sendMessageToTask = (e) => {
-    commentUpdate(comment);
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const sendMessageToTask = () => {
+    let comment = document.getElementById('commentId').value;
+    if(comment == ''){
+      handleClick();
+      return;
+    }
+    document.getElementById('commentId').value = '';
     socket.emit('SEND_COMMENTS',{
       task: taskId,
       comment: comment
     });
-    commentUpdate('');
   }
 
-  const updateComment = e => {
-    commentUpdate(e.target.value);
-  }
-
-  socket.on('COMMENTS_OF_TASK',(data) => {
-    setComments(data['comment']);
+  socket.off('COMMENTS_OF_TASK').on('COMMENTS_OF_TASK',(data) => {
+    console.log(data['comment']);
+    addCommentsToState(data['comment']);
   });
+
+  const addCommentsToState = comment => {
+    addComment(comment);
+  }
 
   return (
     <Fragment>
@@ -64,17 +85,15 @@ function CommmentsByTask({ taskId }) {
             </Fragment>
           ))}
       </List>
+
       <TextField
         className={classes.textArea}
-        id="outlined-multiline-static"
         label="Comment for this Task"
         multiline
         rows={4}
         placeholder="Write a comment..."
         variant="outlined"
-        name = "comment"
-        value = {comment}
-        onChange = {updateComment}
+        id="commentId"
       />
       <div className={classes.divButton}>
         <Button
@@ -88,6 +107,12 @@ function CommmentsByTask({ taskId }) {
           Save
         </Button>
       </div>
+
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="warning">
+          Comment musnt be empty
+        </Alert>
+      </Snackbar>
     </Fragment>
   );
 }
