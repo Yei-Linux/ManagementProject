@@ -24,5 +24,9 @@ export const signInStyles = makeStyles({
   },
   chip: {
     margin: "auto"
+  },
+  errorMessage: {
+    color: 'red',
+    marginTop: '5px'
   }
 });

@@ -27,6 +27,7 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import { Formik } from "formik";
 
 import { authenticateUser } from "../../services/authenticationService";
+import * as yup from 'yup';
 
 function SignIn(props) {
   const history = useHistory();
@@ -58,6 +59,11 @@ function SignIn(props) {
     event.preventDefault();
   };
 
+  const validationSchema = yup.object().shape({
+    email: yup.string().required().label("Email"),
+    password: yup.string().required().label("Password")
+  });
+ 
   return (
     <Card className={classes.root}>
       <CardActionArea>
@@ -68,8 +74,9 @@ function SignIn(props) {
             onSubmit={data => {
               onSubmitForm(data);
             }}
+            validationSchema = {validationSchema}
           >
-            {({ values, handleChange, handleBlur, handleSubmit, setFieldValue }) => (
+            {({ values, handleChange, handleBlur, handleSubmit, setFieldValue, errors }) => (
               <form
                 onSubmit={handleSubmit}
                 className={classes.form}
@@ -89,6 +96,7 @@ function SignIn(props) {
                     helperText="Put your email"
                     margin="normal"
                   />
+                  {errors.email && <div className={classes.errorMessage}>{errors.email}</div>}
                 </FormControl>
 
                 <FormControl className={clsx(classes.formControl)}>
@@ -120,6 +128,7 @@ function SignIn(props) {
                       </InputAdornment>
                     }
                   />
+                  {errors.password && <div className={classes.errorMessage}>{errors.password}</div>}
                 </FormControl>
                 <Button
                   className={classes.buttonSubmit}

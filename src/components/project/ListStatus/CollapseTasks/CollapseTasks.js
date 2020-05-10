@@ -15,7 +15,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Badge from "@material-ui/core/Badge";
 import MailIcon from "@material-ui/icons/Mail";
 
-import { getTaskById } from '../../../../services/taskService';
+import { getTaskById } from "../../../../services/taskService";
 
 import Typography from "@material-ui/core/Typography";
 
@@ -32,20 +32,25 @@ function CollapseTasks({ section, parentTaskCallBack }) {
     changeTaskSelected
   } = useContext(contextTask);
 
-  const { socket,savingSocket,setComments} = useContext(contextSocket);
-  const {isOpen,clickOnDrawer} = useContext(contextDrawer);
+  const { socket, savingSocket, setComments } = useContext(contextSocket);
+  const { isOpen, clickOnDrawer } = useContext(contextDrawer);
 
-  const clickOnTask = async (taskId) => {
+  const clickOnTask = async taskId => {
     initSocket();
     let taskSelected = await getTaskById(taskId);
     setComments(taskSelected.data.task[0].commentsList);
     parentTaskCallBack(taskSelected.data.task[0]);
     clickOnDrawer();
-  }
+  };
 
   const initSocket = () => {
     const socket = io.connect(socketUrl);
     savingSocket(socket);
+  };
+
+  const isTaskListByStatusEmpty = () => {
+    let taskListByStatus = taskList.filter(task => task.status == section.id);
+    return taskListByStatus.length == 0 ? true : false;
   };
 
   return (
@@ -56,36 +61,47 @@ function CollapseTasks({ section, parentTaskCallBack }) {
       className={classes.collapse}
     >
       <Fragment>
-        <List className={classes.root}>
-          {taskList && 
-            taskList.map((task, index) => (
-              <Fragment key={task._id}>
-                {task.status == section.id && <ListItem button key={task._id} className={classes.listItem} 
-                  onClick={ event => clickOnTask(task._id)} >
-                  <ListItemAvatar>
-                    <Avatar alt="Cindy Baker" src="/img/taskIcon.png" />
-                  </ListItemAvatar>
+        {taskList && !isTaskListByStatusEmpty() ? (
+          <List className={classes.root}>
+            {taskList &&
+              taskList.map((task, index) => (
+                <Fragment key={task._id}>
+                  {task.status == section.id && (
+                    <ListItem
+                      button
+                      key={task._id}
+                      className={classes.listItem}
+                      onClick={event => clickOnTask(task._id)}
+                    >
+                      <ListItemAvatar>
+                        <Avatar alt="Cindy Baker" src="/img/taskIcon.png" />
+                      </ListItemAvatar>
 
-                  <ListItemText
-                    primary={`${task.name}`}
-                    className={classes.listItemText}
-                  />
+                      <ListItemText
+                        primary={`${task.name}`}
+                        className={classes.listItemText}
+                      />
 
-                  <Typography className={classes.date}>
-                    April 25,2020
-                  </Typography>
-                  <Badge
-                    color="secondary"
-                    variant="dot"
-                    className={classes.badge}
-                  >
-                    <Avatar alt="Cindy Baker" src="/img/comment.png" />
-                  </Badge>
-                </ListItem>}
-              </Fragment>
-            ))
-          }
-        </List>
+                      <Typography className={classes.date}>
+                        April 25,2020
+                      </Typography>
+                      <Badge
+                        color="secondary"
+                        badgeContent={task.numberComments}
+                        className={classes.badge}
+                      >
+                        <Avatar alt="Cindy Baker" src="/img/comment.png" />
+                      </Badge>
+                    </ListItem>
+                  )}
+                </Fragment>
+              ))}
+          </List>
+        ) : (
+          <div className={classes.backgroundEmptyTask} >
+            <div className={classes.emptyTask}></div>
+          </div>
+        )}
       </Fragment>
     </Collapse>
   );

@@ -16,6 +16,8 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import contextSocket from '../../../../../../context/socket/socketContext';
+import contextTask from '../../../../../../context/task/taskContext';
+import { getProjectWithTasks } from "../../../../../../services/projectService";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -24,6 +26,7 @@ function Alert(props) {
 function CommmentsByTask({ taskId }) {
   const classes = commentsStyle();
 
+  const { projectByTasks,setTasksList } = useContext(contextTask);
   const { socket,comments,setComments,addComment} = useContext(contextSocket);
   const [open, setOpen] = React.useState(false);
 
@@ -46,8 +49,11 @@ function CommmentsByTask({ taskId }) {
     }
     document.getElementById('commentId').value = '';
     socket.emit('SEND_COMMENTS',{
-      task: taskId,
-      comment: comment
+      commentData: {
+        task: taskId,
+        comment: comment
+      },
+      projectId: projectByTasks['_id']
     });
   }
 
@@ -56,9 +62,23 @@ function CommmentsByTask({ taskId }) {
     addCommentsToState(data['comment']);
   });
 
+  socket.off('TASKS_BY_PROJECT').on('TASKS_BY_PROJECT',(data) => {
+    console.log(data);
+    loadTasksByProject(data['tasks'][0]['tasksList']);
+  });
+
   const addCommentsToState = comment => {
     addComment(comment);
   }
+
+  const addingFieldToTaskList = taskList => {
+    taskList.forEach(task => {task["selected"] = false});
+    return taskList;
+  };
+
+  const loadTasksByProject = async tasks => {
+    setTasksList(addingFieldToTaskList(tasks));
+  };
 
   return (
     <Fragment>
