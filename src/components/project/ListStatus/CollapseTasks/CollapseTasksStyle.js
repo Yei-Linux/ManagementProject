@@ -34,12 +34,17 @@ export const collapTaskseStyles = makeStyles(theme => ({
   listItemIcon: {
     marginRight: "20px"
   },
-
   badge: {
-    marginRight: "20px"
+    marginRight: "20px",
+    '@media(max-width: 800px)' : {
+      display: "none !important"
+    }
   },
   date: {
-    marginRight: "20px"
+    marginRight: "20px",
+    '@media(max-width: 800px)' : {
+      display: "none !important"
+    }
   },
   backgroundEmptyTask:{
     width: '100%',

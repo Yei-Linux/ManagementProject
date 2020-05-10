@@ -7,11 +7,18 @@ export const addTaskStyles = makeStyles({
   form: {
     maxWidth: "100%",
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    '@media(max-width: 800px)' : {
+      flexDirection: 'column',
+      alignItems: "center"
+    }
   },
   formControl:{
     width: "450px",
-    marginTop: "-15px"
+    marginTop: "-15px",
+    '@media(max-width: 800px)' : {
+      width: "100%"
+    }
   },
   input: {
     width: "100%",
@@ -22,7 +29,10 @@ export const addTaskStyles = makeStyles({
   buttonSubmit: {
     width: "175px",
     height: "35px",
-    color: "white"
+    color: "white",
+    '@media(max-width: 800px)' : {
+      marginTop: "30px"
+    }
   },  
   iconAdd:{
     color: "#29c7ac"

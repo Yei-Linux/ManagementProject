@@ -80,7 +80,7 @@ function CollapseTasks({ section, parentTaskCallBack }) {
                       <ListItemText
                         primary={`${task.name}`}
                         className={classes.listItemText}
-                      />
+                      /> 
 
                       <Typography className={classes.date}>
                         April 25,2020

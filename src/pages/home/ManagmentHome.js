@@ -33,14 +33,14 @@ function ManagmentHome(props) {
 
   return (
     <div className={classes.root}>
-      <CssBaseline />
+      <Aside parentCallBack={handleDrawerClose} open={open} classes={classes} />
+      
       <TopBar
         logout={logOut}
         parentCallBack={handleDrawerOpen}
         open={open}
         classes={classes}
       />
-      <Aside parentCallBack={handleDrawerClose} open={open} classes={classes} />
       <Project open={open} classes={classes} />
     </div>
   );

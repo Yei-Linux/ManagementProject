@@ -5,7 +5,8 @@ const drawerWidth = 240;
 
 export const useHomeStyles = makeStyles(theme => ({
   root: {
-    display: "flex"
+    display: "flex",
+    height: 'inherit'
   },
   appBar: {
     transition: theme.transitions.create(["margin", "width"], {
@@ -30,7 +31,8 @@ export const useHomeStyles = makeStyles(theme => ({
   },
   drawer: {
     width: drawerWidth,
-    flexShrink: 0
+    flexShrink: 0,
+    position: "absolute"
   },
   drawerPaper: {
     width: drawerWidth,
@@ -52,26 +54,34 @@ export const useHomeStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
-    marginLeft: -drawerWidth+50,
-    backgroundColor: "white"
+    backgroundColor: "white",
+    marginRight: "50px",
+    marginLeft: "50px",
+    '@media(max-width: 800px)' : {
+      marginRight: "30px !important",
+      marginLeft: "30px !important",
+    },
+    '@media(max-width: 500px)' : {
+      marginRight: "20px !important",
+      marginLeft: "20px !important",
+    }
   },
   content1: {
-    marginTop: "100px"
+    marginTop: "100px",
+    maxHeight: "min-content"
   },
   content2: {
-    marginTop: "50px"
   },
   contentShift: {
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
-    marginLeft: 50
+    marginLeft: +drawerWidth+50,
   },
   text: {
       paddingTop: "6px",
