@@ -19,7 +19,7 @@ function TopBar({ logout, parentCallBack, open, classes }) {
       className={clsx(classes.appBar, {
         [classes.appBarShift]: open
       })}
-    >
+    > 
       <Toolbar>
         <IconButton
           color="inherit"

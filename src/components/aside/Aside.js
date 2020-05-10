@@ -5,7 +5,6 @@ import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
 
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
@@ -33,7 +32,7 @@ import {
 } from "../../services/projectService";
 import * as yup from 'yup';
 
-function Aside({ parentCallBack, open, classes }) {
+function Aside({ parentCallBack, classes }) {
   const theme = useTheme();
 
   const {
@@ -76,15 +75,7 @@ function Aside({ parentCallBack, open, classes }) {
   });
 
   return (
-    <Drawer
-      className={classes.drawer}
-      variant="persistent"
-      anchor="left"
-      open={open}
-      classes={{
-        paper: classes.drawerPaper
-      }}
-    >
+    <Fragment>
       <div className={classes.drawerHeader}>
         <Typography variant="h6" noWrap className={classes.text}>
           Yei Linux
@@ -166,7 +157,7 @@ function Aside({ parentCallBack, open, classes }) {
           </ListItem>
         ))}
       </List>
-    </Drawer>
+    </Fragment>
   );
 }
 

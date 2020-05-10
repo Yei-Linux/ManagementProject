@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useLayoutEffect } from "react";
 import { useHistory } from "react-router-dom";
 
 import { useHomeStyles } from "./HomeMaterialStyle";
@@ -12,11 +12,23 @@ import Aside from "../../components/aside/Aside";
 import TopBar from "../../components/bar/TopBar";
 import Project from "../../components/project/Project";
 
+import Drawer from "@material-ui/core/Drawer";
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
+
 import CssBaseline from "@material-ui/core/CssBaseline";
 
 function ManagmentHome(props) {
   const classes = useHomeStyles();
+  const [width, setWidth] = React.useState(window.innerWidth);
   const [open, setOpen] = React.useState(false);
+  const [openSwipeableDrawer, setOpenSwipeableDrawer] = React.useState(false);
+  
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  });
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -25,19 +37,65 @@ function ManagmentHome(props) {
     setOpen(false);
   };
 
+  const handleOpenSwipeableDrawer = () => {
+    setOpenSwipeableDrawer(true);
+  }
+
+  const handleCloseSwipeableDrawer = () => {
+    setOpenSwipeableDrawer(false);
+  }
+
+  const handleWichDrawerOpen = () => {
+    width > 768 ? handleDrawerOpen() : handleOpenSwipeableDrawer();
+  }
+
   const history = useHistory();
   const logOut = () => {
     localStorage.clear("user_info");
     history.push("/");
   };
 
+  const handleResize = () => {
+    setWidth(window.innerWidth);
+    width > 768 ? handleCloseSwipeableDrawer() : handleDrawerClose();
+  }
+
+  const isMobileView = () => {
+    return width > 768 ? false : true;
+  }
+
   return (
     <div className={classes.root}>
-      <Aside parentCallBack={handleDrawerClose} open={open} classes={classes} />
+      {
+        !isMobileView() ?
+        <Drawer
+        className={classes.drawer}
+        variant="persistent"
+        anchor="left"
+        open={open}
+        classes={{
+          paper: classes.drawerPaper
+        }}
+        >
+          <Aside parentCallBack={handleDrawerClose} classes={classes} />
+        </Drawer>
+        :
+        <SwipeableDrawer
+          anchor="left"
+          open={openSwipeableDrawer}
+          onClose={handleOpenSwipeableDrawer}
+          onOpen={handleCloseSwipeableDrawer}
+          classes={{
+            paper: classes.drawerPaper
+          }}
+        >
+          <Aside parentCallBack={handleCloseSwipeableDrawer} classes={classes} />
+        </SwipeableDrawer>
+      }
       
       <TopBar
         logout={logOut}
-        parentCallBack={handleDrawerOpen}
+        parentCallBack={handleWichDrawerOpen}
         open={open}
         classes={classes}
       />
@@ -48,4 +106,4 @@ function ManagmentHome(props) {
 
 export default ManagmentHome;
 
-ManagmentHome.propTypes = {};
+ManagmentHome.propTypes = {}; 

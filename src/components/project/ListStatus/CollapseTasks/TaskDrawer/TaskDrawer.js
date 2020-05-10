@@ -44,6 +44,7 @@ import { drawerStyles } from "./TaskDrawerStyle";
 import { Formik } from "formik";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
+import CloseIcon from '@material-ui/icons/Close';
 
 import { updateTask } from "../../../../../services/taskService";
 import { getProjectWithTasks } from "../../../../../services/projectService";
@@ -164,6 +165,7 @@ function TaskDrawer({ open, task }) {
           open={open}
           onClose={clickOnDrawer}
           onOpen={open}
+          className={classes.drawerStyle}
         >
           <Formik
             initialValues={{
@@ -194,8 +196,8 @@ function TaskDrawer({ open, task }) {
                   <CardHeader
                     action={
                       <Fragment>
-                        <IconButton aria-label="settings">
-                          <MoreVertIcon />
+                        <IconButton aria-label="settings" onClick={clickOnDrawer}>
+                          <CloseIcon />
                         </IconButton>
                       </Fragment>
                     }
@@ -211,6 +213,7 @@ function TaskDrawer({ open, task }) {
                             onOpen={handleOpen}
                             name="status"
                             value={values.status}
+                            className={classes.selectStatus}
                             onChange={event => {
                               setFieldValue("status", event.target.value);
                             }}
@@ -230,6 +233,7 @@ function TaskDrawer({ open, task }) {
                         <span> Faltan {values.daysToFinish} dias </span>
                       )
                     }
+                    className = {classes.cardHeader}
                   />
 
                   <Divider />
@@ -345,19 +349,23 @@ function TaskDrawer({ open, task }) {
                         Descripcion
                       </FormLabel>
                       <div className={classes.input}>
-                        <Input
-                          inputProps={{ "aria-label": "description" }}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          name="description"
-                          value={values.description}
-                          readOnly={
+                      <TextField
+                        className={classes.textField}
+                        label="Write a description"
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        name="description"
+                        value={values.description}
+                        readOnly={
                             task.status == "5eab3a7d6c3f964a8ccb0138"
                               ? true
                               : false
-                          }
-                        />
-                        {errors.description && (
+                        }
+                      />
+                      {errors.description && (
                           <div className={classes.errorMessage}>
                             {errors.description}
                           </div>
@@ -366,12 +374,12 @@ function TaskDrawer({ open, task }) {
                     </FormControl>
                   </CardContent>
 
-                  <CardActions disableSpacing>
+                  <CardActions disableSpacing className={classes.cardFooter}>
                     <IconButton aria-label="add to favorites">
-                      <FavoriteIcon />
+                      <FavoriteIcon className = {classes.heardIcon}/>
                     </IconButton>
                     <IconButton aria-label="share">
-                      <ShareIcon />
+                      <ShareIcon className = {classes.shareIcon}/>
                     </IconButton>
 
                     {task.status != "5eab3a7d6c3f964a8ccb0138" && (
