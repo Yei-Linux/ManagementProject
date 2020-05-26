@@ -48,6 +48,8 @@ import CloseIcon from '@material-ui/icons/Close';
 
 import { updateTask } from "../../../../../services/taskService";
 import { getProjectWithTasks } from "../../../../../services/projectService";
+import { getFirstLetterOfUser } from "../../../../../helpers/DataHelper";
+import { isProjectCreatedByMe } from "../../../../../helpers/AuthHelper";
 
 import CommmentsByTask from "./CommentsByTask/CommmentsByTask";
 import * as yup from "yup";
@@ -244,10 +246,11 @@ function TaskDrawer({ open, task }) {
                         Responsable
                       </FormLabel>
                       <AvatarGroup max={3} className={classes.input}>
-                        <Avatar alt="Remy Sharp" src="/img/1.jpg" />
-                        <Avatar alt="Travis Howard" src="/img/2.jpg" />
-                        <Avatar alt="Cindy Baker" src="/img/3.jpg" />
-                        <Avatar alt="Cindy Baker" src="/img/3.jpg" />
+                        { task.usersGroup && 
+                          task.usersGroup.map((user,index) => (
+                            <Avatar alt="Remy Sharp">{getFirstLetterOfUser(user['user']['name'])}</Avatar>
+                          ))
+                        }
                       </AvatarGroup>
                     </FormControl>
 

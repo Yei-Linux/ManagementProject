@@ -48,6 +48,8 @@ function SignIn(props) {
   const onSubmitForm = async data => {
     let response = await authenticateUser(data);
     localStorage.setItem("user_info",response.data.token);
+    localStorage.setItem("user_id",response.data.id);
+    localStorage.setItem("user_name",response.data.name);
     history.push("/home");
   };
 

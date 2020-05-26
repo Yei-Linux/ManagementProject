@@ -28,9 +28,12 @@ import contextTask from "../../context/task/taskContext";
 import {
   getProjects,
   addProject,
-  getProjectWithTasks
+  getProjectWithTasks,
+  getProjectWithAlienTasks
 } from "../../services/projectService";
 import * as yup from 'yup';
+
+import { isProjectCreatedByMe } from '../../helpers/AuthHelper';
 
 function Aside({ parentCallBack, classes }) {
   const theme = useTheme();
@@ -59,15 +62,36 @@ function Aside({ parentCallBack, classes }) {
   };
 
   const addingFieldToTaskList = taskList => {
-    taskList.forEach(task => {task["selected"] = false});
+    taskList.forEach(task => {task["selected"] = false;task['me'] = true;});
     return taskList;
   };
+
+  const filteredAlienTask = invitedTasks => {
+    let newAlienTask = invitedTasks.map( alienTask =>{
+      alienTask.task['me'] = alienTask.me;
+      alienTask.task['numberComments'] = alienTask.numberComments;
+      alienTask.task['selected'] = false;
+      return { ...alienTask.task };
+    });
+    return newAlienTask;
+  }
 
   const loadTasksByProject = async project => {
     let tasksResponse = await getProjectWithTasks(project._id);
     setTasksList(addingFieldToTaskList(tasksResponse.data.projectWithTasks[0].tasksList));
     let projectResponse = tasksResponse.data.projectWithTasks[0];
     setProjectByTasks({"_id": projectResponse._id, "name": projectResponse.name, "user": projectResponse.user, "tasks": projectResponse.taskList});
+  };
+
+  const loadAlienTasksByProject = async (projectId) => {
+      let tasksResponse = await getProjectWithAlienTasks(projectId);
+      setTasksList(filteredAlienTask(tasksResponse.data.invitedTasks));
+      let projectResponse = tasksResponse.data.project;
+      setProjectByTasks({"_id": projectResponse._id, "name": projectResponse.name, "user": projectResponse.user, "tasks": [] });
+  };
+
+  const loadTasksByTypeCreator = async (project) => {
+    isProjectCreatedByMe(project.user) ? await loadTasksByProject(project) : await loadAlienTasksByProject(project._id) ;
   };
 
   const validationSchema = yup.object().shape({
@@ -145,7 +169,7 @@ function Aside({ parentCallBack, classes }) {
           <ListItem
             button
             key={project._id}
-            onClick={event => loadTasksByProject(project)}
+            onClick={event => loadTasksByTypeCreator(project)}
           >
             <ListItemIcon>
               <LabelImportantIcon />

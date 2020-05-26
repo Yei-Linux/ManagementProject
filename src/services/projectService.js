@@ -17,3 +17,7 @@ export const deleteProject = async (projectId) =>{
 export const addProject = async (projectRequest) =>{
     return await axiosClient.post(`/projects`,projectRequest);
 }
+
+export const getProjectWithAlienTasks = async (project) => {
+    return await axiosClient.get(`/invitedUsers/alienTasks`,{ params : {project}});
+}

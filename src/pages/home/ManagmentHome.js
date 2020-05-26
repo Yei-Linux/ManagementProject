@@ -52,6 +52,7 @@ function ManagmentHome(props) {
   const history = useHistory();
   const logOut = () => {
     localStorage.clear("user_info");
+    localStorage.clear("user_id");
     history.push("/");
   };
 

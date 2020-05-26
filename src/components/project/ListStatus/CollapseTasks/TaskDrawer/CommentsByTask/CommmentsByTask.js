@@ -19,6 +19,8 @@ import contextSocket from '../../../../../../context/socket/socketContext';
 import contextTask from '../../../../../../context/task/taskContext';
 import { getProjectWithTasks } from "../../../../../../services/projectService";
 
+import { getFirstLetterOfUser } from "../../../../../../helpers/DataHelper";
+
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -51,7 +53,8 @@ function CommmentsByTask({ taskId }) {
     socket.emit('SEND_COMMENTS',{
       commentData: {
         task: taskId,
-        comment: comment
+        comment: comment,
+        user: localStorage.getItem('user_id')
       },
       projectId: projectByTasks['_id']
     });
@@ -88,14 +91,14 @@ function CommmentsByTask({ taskId }) {
             <Fragment>
               <ListItem alignItems="flex-start">
                 <ListItemAvatar>
-                  <Avatar alt="Remy Sharp" src="/img/1.jpg" />
+                  <Avatar alt="Remy Sharp">{getFirstLetterOfUser(comment['user']['name'])}</Avatar>
                 </ListItemAvatar>
                 <ListItemText
                   primary={comment.comment}
                   secondary={
                     <Fragment>
                       <Typography component="span" variant="body2">
-                        {new Date(comment.createdAt).toLocaleString()}
+                        {comment['user']['name']} - {new Date(comment.createdAt).toLocaleString()}
                       </Typography>
                     </Fragment>
                   }

@@ -13,7 +13,7 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 
 import Badge from "@material-ui/core/Badge";
-import MailIcon from "@material-ui/icons/Mail";
+import Chip from '@material-ui/core/Chip';
 
 import { getTaskById } from "../../../../services/taskService";
 
@@ -53,6 +53,29 @@ function CollapseTasks({ section, parentTaskCallBack }) {
     return taskListByStatus.length == 0 ? true : false;
   };
 
+  const isThisTaskAsignedByMe = (task) => {
+    if(task.me != undefined && task.me){
+      return <Chip
+                avatar={<Avatar>M</Avatar>}
+                className={classes.date}
+                label="Asigned By Me"
+                clickable
+                color="primary"
+                variant="outlined"
+              />
+    }
+    if(task.me != undefined && !task.me){
+      return  <Chip
+                avatar={<Avatar>O</Avatar>}
+                className={classes.date}
+                label="Asigned By Other"
+                clickable
+                color="secondary"
+                variant="outlined"
+              />
+    }  
+  }
+
   return (
     <Collapse
       in={section.selected}
@@ -70,6 +93,7 @@ function CollapseTasks({ section, parentTaskCallBack }) {
                     <ListItem
                       button
                       key={task._id}
+                      disabled={!task.me}
                       className={classes.listItem}
                       onClick={event => clickOnTask(task._id)}
                     >
@@ -80,11 +104,16 @@ function CollapseTasks({ section, parentTaskCallBack }) {
                       <ListItemText
                         primary={`${task.name}`}
                         className={classes.listItemText}
-                      /> 
+                      />
 
                       <Typography className={classes.date}>
                         April 25,2020
                       </Typography>
+
+                      {
+                        isThisTaskAsignedByMe(task)
+                      }
+
                       <Badge
                         color="secondary"
                         badgeContent={task.numberComments}
@@ -98,7 +127,7 @@ function CollapseTasks({ section, parentTaskCallBack }) {
               ))}
           </List>
         ) : (
-          <div className={classes.backgroundEmptyTask} >
+          <div className={classes.backgroundEmptyTask}>
             <div className={classes.emptyTask}></div>
           </div>
         )}
