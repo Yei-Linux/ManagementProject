@@ -252,6 +252,9 @@ function TaskDrawer({ open, task }) {
                           ))
                         }
                       </AvatarGroup>
+                      <Button variant="outlined" size="small" color="primary">
+                        Agregar
+                      </Button>
                     </FormControl>
 
                     <FormControl className={classes.formControl}>

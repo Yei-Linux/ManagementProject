@@ -17,9 +17,10 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 import contextSocket from '../../../../../../context/socket/socketContext';
 import contextTask from '../../../../../../context/task/taskContext';
-import { getProjectWithTasks } from "../../../../../../services/projectService";
+import { getProjectWithTasks, getProjectWithAlienTasks } from "../../../../../../services/projectService";
 
 import { getFirstLetterOfUser } from "../../../../../../helpers/DataHelper";
+import { isProjectCreatedByMe } from "../../../../../../helpers/AuthHelper";
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -63,24 +64,37 @@ function CommmentsByTask({ taskId }) {
   socket.off('COMMENTS_OF_TASK').on('COMMENTS_OF_TASK',(data) => {
     console.log(data['comment']);
     addCommentsToState(data['comment']);
-  });
-
-  socket.off('TASKS_BY_PROJECT').on('TASKS_BY_PROJECT',(data) => {
-    console.log(data);
-    loadTasksByProject(data['tasks'][0]['tasksList']);
-  });
+    let me = isProjectCreatedByMe(projectByTasks['user']);
+    me ? loadTasksByProject(projectByTasks['_id']) : loadAlienTasksByProject(projectByTasks['_id']); 
+  }); 
 
   const addCommentsToState = comment => {
     addComment(comment);
   }
 
   const addingFieldToTaskList = taskList => {
-    taskList.forEach(task => {task["selected"] = false});
+    taskList.forEach(task => {task["selected"] = false;task['me'] = true;});
     return taskList;
   };
 
-  const loadTasksByProject = async tasks => {
-    setTasksList(addingFieldToTaskList(tasks));
+  const filteredAlienTask = invitedTasks => {
+    let newAlienTask = invitedTasks.map( alienTask =>{
+      alienTask.task['me'] = alienTask.me;
+      alienTask.task['numberComments'] = alienTask.numberComments;
+      alienTask.task['selected'] = false;
+      return { ...alienTask.task };
+    });
+    return newAlienTask;
+  }
+
+  const loadAlienTasksByProject = async projectId => {
+    let tasksResponse = await getProjectWithAlienTasks(projectId);
+    setTasksList(filteredAlienTask(tasksResponse.data.invitedTasks));
+  };
+
+  const loadTasksByProject = async projectId => {
+    let tasksResponse = await getProjectWithTasks(projectId);
+    setTasksList(addingFieldToTaskList(tasksResponse.data.projectWithTasks[0].tasksList));
   };
 
   return (
