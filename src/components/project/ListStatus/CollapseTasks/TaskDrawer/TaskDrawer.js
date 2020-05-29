@@ -51,6 +51,7 @@ import { getProjectWithTasks } from "../../../../../services/projectService";
 import { getFirstLetterOfUser } from "../../../../../helpers/DataHelper";
 import { isProjectCreatedByMe } from "../../../../../helpers/AuthHelper";
 
+import ModalDrawer from './ModalDrawer/ModalDrawer';
 import CommmentsByTask from "./CommentsByTask/CommmentsByTask";
 import * as yup from "yup";
 
@@ -77,6 +78,15 @@ function TaskDrawer({ open, task }) {
 
   const [openSelect, setOpenSelect] = useState(false);
   const [openSelectPriority, setOpenSelectPriority] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
 
   const handleClose = () => {
     setOpenSelect(false);
@@ -252,7 +262,7 @@ function TaskDrawer({ open, task }) {
                           ))
                         }
                       </AvatarGroup>
-                      <Button variant="outlined" size="small" color="primary">
+                      <Button variant="outlined" size="small" color="primary" onClick={handleOpenModal}>
                         Agregar
                       </Button>
                     </FormControl>
@@ -407,6 +417,8 @@ function TaskDrawer({ open, task }) {
           <CommmentsByTask taskId={task._id} />
         </SwipeableDrawer>
       )}
+
+      <ModalDrawer open={openModal}  parentCallBackClose={handleCloseModal}/>
     </Fragment>
   );
 }
