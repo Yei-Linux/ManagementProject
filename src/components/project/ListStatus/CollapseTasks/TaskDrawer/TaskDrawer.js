@@ -418,7 +418,7 @@ function TaskDrawer({ open, task }) {
         </SwipeableDrawer>
       )}
 
-      <ModalDrawer open={openModal}  parentCallBackClose={handleCloseModal}/>
+      <ModalDrawer open={openModal}  parentCallBackClose={handleCloseModal} task={task}/>
     </Fragment>
   );
 }

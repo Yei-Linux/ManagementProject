@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -9,6 +9,11 @@ import AsyncSelect from "react-select";
 import Button from "@material-ui/core/Button";
 
 import { searchUsers } from "../../../../../../services/userService";
+import { emailTemplate } from '../../../../../../constant/emailTemplate';
+import { sendEmailNotification } from "../../../../../../services/notificationService";
+import { replaceValuesInTemplate } from "../../../../../../helpers/DataHelper";
+import contextTask from "../../../../../../context/task/taskContext";
+import { encryptData, changeSpecialsCharacteresOfUrlEncrypted } from "../../../../../../helpers/encryptionHelper";
 
 const Fade = React.forwardRef(function Fade(props, ref) {
   const { in: open, children, onEnter, onExited, ...other } = props;
@@ -34,10 +39,14 @@ const Fade = React.forwardRef(function Fade(props, ref) {
   );
 });
 
-function ModalDrawer({ open, parentCallBackClose }) {
+function ModalDrawer({ open, parentCallBackClose, task }) {
   const classes = modalDrawerStyles();
-  const [inputLetters,setInputLetters] = useState('');
+  const [optionsSelected,setOptionsSelected] = useState([]);
   const [optionsSelect,setOptionSelect] = useState([]); 
+
+  const {
+    projectByTasks
+  } = useContext(contextTask);
 
   const handleInputChange = (firstLetters) => {
     if(firstLetters === ''){
@@ -47,6 +56,31 @@ function ModalDrawer({ open, parentCallBackClose }) {
       setOptionSelect(response.data.usersFound);
     });
   };
+
+  const sendNotifications = async () => {
+    for(const user of optionsSelected){
+      let urlEncryptedByUser = encryptUrl(user.value);
+      let templateReplaced = replaceValuesInTemplate(emailTemplate(),{"userOwner": localStorage.getItem('user_name'),"projectName":projectByTasks.name,"task":task.name,"linkEncrypted":urlEncryptedByUser});
+      let result = await sendEmailNotification({to: user.label,subject: 'Invitation to Project in Managmet Projects-Yei Linux',message: 'Some wants to join them!',template: templateReplaced});
+    }
+  }
+
+  const encryptUrl = (user) =>{
+    let objectToSend = {
+      user:user,
+      project:projectByTasks._id,
+      task:task._id,
+      projectName: projectByTasks.name,
+      userOwner: localStorage.getItem('user_name')
+    }
+    let dataEncrypted = encryptData(JSON.stringify(objectToSend));
+    dataEncrypted = changeSpecialsCharacteresOfUrlEncrypted(dataEncrypted);
+    return `http://localhost:3000/confirm/${dataEncrypted}`;
+  }
+
+  const onChangeSelect = (data) => {
+    setOptionsSelected(data);
+  }
 
 
   return (
@@ -74,6 +108,7 @@ function ModalDrawer({ open, parentCallBackClose }) {
             isMulti
             options={optionsSelect}
             onInputChange={handleInputChange}
+            onChange={onChangeSelect}
           />
 
           <div className={classes.footerButtons}>
@@ -90,6 +125,7 @@ function ModalDrawer({ open, parentCallBackClose }) {
               size="small"
               color="primary"
               className={classes.buttonFooter}
+              onClick={sendNotifications}
             >
               Send
             </Button>

@@ -8,7 +8,7 @@ export const requireSignIn = (to, from, next) => {
 };
 
 export const notLogin = (to, from, next) => {
-  if (!haveToken()) {
+  if ( to['match']['path'] == '/confirm/:data' || !haveToken()) {
     next();
   }
   next.redirect("/home");

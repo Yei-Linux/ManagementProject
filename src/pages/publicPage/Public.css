@@ -1,0 +1,11 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  font-family: "Baloo Paaji 2", cursive;
+}
+
+html,
+body {
+  height: 100%;
+}

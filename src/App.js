@@ -4,13 +4,14 @@ import "./App.css";
 import ManagmentHome from "./pages/home/ManagmentHome";
 import { requireSignIn, notLogin } from "./guards/managmentGuard";
 
-import { BrowserRouter as Router, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { GuardProvider, GuardedRoute } from "react-router-guards";
 
 import ProjectState from "./context/project/projectState";
 import TaskState from "./context/task/taskState";
 import DrawerState from "./context/drawer/drawerState";
 import SocketState from "./context/socket/socketState";
+import Public from "./pages/publicPage/Public";
 
 function App() {
   return (
@@ -32,6 +33,12 @@ function App() {
                       path="/signup"
                       render={props => <Login {...props} />}
                     />
+                    <GuardedRoute
+                      exact
+                      path="/confirm/:data"
+                      render={props => <Public {...props} />}
+                    />
+
                     <GuardProvider guards={[requireSignIn]}>
                       <GuardedRoute
                         exact
