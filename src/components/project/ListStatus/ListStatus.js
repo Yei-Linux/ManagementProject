@@ -30,6 +30,7 @@ function ListSection() {
   const {isOpen,clickOnDrawer} = useContext(contextDrawer);
   const { socket,setComments} = useContext(contextSocket);
   const [taskId,updateTaskId] = useState('');
+  const [taskAsigned,setTaskAsigned] = useState(false);
 
   useEffect(()=>{
     if( socket && !isOpen ){
@@ -62,6 +63,10 @@ function ListSection() {
     setTaskId(data._id);
   }
 
+  const isAsignedTask = (data) => {
+    setTaskAsigned(data);
+  }
+
   return (
     <Fragment>
       <List className={classes.root}>
@@ -79,11 +84,13 @@ function ListSection() {
                 {section.selected ? <ExpandLess /> : <ExpandMore />}
               </ListItem>
 
-              <CollapseTasks section={section} parentTaskCallBack={setTaskSelected}/>
+              <CollapseTasks section={section} parentTaskCallBack={setTaskSelected} parenAsignedCallBack={isAsignedTask}/>
             </Fragment>
           ))}
       </List>
-      <TaskDrawer open={isOpen} task = {taskSelected}/>
+      {
+        isOpen && <TaskDrawer open={isOpen} task = {taskSelected} me={taskAsigned}/>
+      }
     </Fragment>
   );
 }

@@ -30,7 +30,7 @@ function CollapseTasks({ section, parentTaskCallBack }) {
     setTasksList,
     projectByTasks,
     changeTaskSelected
-  } = useContext(contextTask);
+  } = useContext(contextTask); 
 
   const { socket, savingSocket, setComments } = useContext(contextSocket);
   const { isOpen, clickOnDrawer } = useContext(contextDrawer);

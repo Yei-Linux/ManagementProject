@@ -3,6 +3,7 @@ import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 
 import contextDrawer from "../../../../../context/drawer/drawerContext";
 import contextTask from "../../../../../context/task/taskContext";
+import contextSocket from "../../../../../context/socket/socketContext";
 
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
@@ -46,7 +47,9 @@ import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import CloseIcon from '@material-ui/icons/Close';
 
-import { updateTask } from "../../../../../services/taskService";
+import Tooltip from '@material-ui/core/Tooltip';
+
+import { updateTask, updateLikeTask } from "../../../../../services/taskService";
 import { getProjectWithTasks } from "../../../../../services/projectService";
 import { getFirstLetterOfUser } from "../../../../../helpers/DataHelper";
 import { isProjectCreatedByMe } from "../../../../../helpers/AuthHelper";
@@ -56,8 +59,10 @@ import CommmentsByTask from "./CommentsByTask/CommmentsByTask";
 import * as yup from "yup";
 
 import clsx from "clsx";
+import { updateInvitedTaskLike } from "../../../../../services/invitedUserTaskService";
+import { getUsersLikeByTask } from "../../../../../services/userService";
 
-function TaskDrawer({ open, task }) {
+function TaskDrawer({ open, task, me }) {
   const classes = drawerStyles();
   const sections = [
     { id: "5eab3a6e6c3f964a8ccb0136", name: "To Do" },
@@ -75,10 +80,24 @@ function TaskDrawer({ open, task }) {
     contextTask
   );
   const { clickOnDrawer } = useContext(contextDrawer);
+  const { socket,comments,setComments,addComment} = useContext(contextSocket);
 
   const [openSelect, setOpenSelect] = useState(false);
   const [openSelectPriority, setOpenSelectPriority] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [likeTask,setLikeTask] = useState(false);
+  const [usersLikes,setUsersLikes] = useState([]);
+
+  useEffect(()=>{
+    if(open){
+      async function getUsersLikes(){
+        setLikeTask(task.likeTask);
+        let usersOnLikes = await getUsersLikeByTask(task._id);
+        setUsersLikes(usersOnLikes.data.usersFound);
+      }
+      getUsersLikes();
+    } 
+  },[open]);
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -169,6 +188,19 @@ function TaskDrawer({ open, task }) {
       .label("description")
   });
 
+  const onUpdateLikeTask = async () => {
+    let newLike = isProjectCreatedByMe(projectByTasks.user) ? await updateLikeTask(task._id,{likeTask: !likeTask}) : await updateInvitedTaskLike({task: task._id, likeTask: !likeTask})
+    setLikeTask(newLike.data.userLikeUpdated.likeTask);
+
+    socket.emit('SEND_TASK_ID_FOR_USER_LIKES',{
+      task: task._id
+    });
+  };
+
+  socket.off('USER_LIKES').on('USER_LIKES',(data) => {
+    setUsersLikes(data['usersFound']);
+  }); 
+
   return (
     <Fragment>
       {task && (
@@ -258,7 +290,9 @@ function TaskDrawer({ open, task }) {
                       <AvatarGroup max={3} className={classes.input}>
                         { task.usersGroup && 
                           task.usersGroup.map((user,index) => (
-                            <Avatar alt="Remy Sharp">{getFirstLetterOfUser(user['user']['name'])}</Avatar>
+                            <Tooltip title={user['user']['name']} arrow>
+                              <Avatar alt="Remy Sharp">{getFirstLetterOfUser(user['user']['name'])}</Avatar>
+                            </Tooltip>
                           ))
                         }
                       </AvatarGroup>
@@ -391,9 +425,16 @@ function TaskDrawer({ open, task }) {
                   </CardContent>
 
                   <CardActions disableSpacing className={classes.cardFooter}>
-                    <IconButton aria-label="add to favorites">
-                      <FavoriteIcon className = {classes.heardIcon}/>
-                    </IconButton>
+                    <Tooltip title={
+                      usersLikes.map( user => (
+                        <p>{user.name}</p>
+                      ))
+                      } arrow>
+                      <IconButton aria-label="add to favorites" onClick={onUpdateLikeTask}>
+                        <FavoriteIcon className = { !likeTask ? classes.heardIcon : classes.heardIconActive}/>
+                      </IconButton>
+                    </Tooltip>
+                    
                     <IconButton aria-label="share">
                       <ShareIcon className = {classes.shareIcon}/>
                     </IconButton>

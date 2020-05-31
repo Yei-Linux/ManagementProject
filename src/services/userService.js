@@ -8,3 +8,7 @@ export const signUpUser = async (data) => {
 export const searchUsers = async (firstLettersUsers) => {
     return await axiosClient.get(`/users/search`,{params: {firstLetter: firstLettersUsers}});
 }
+
+export const getUsersLikeByTask = async (taskId) => {
+    return await axiosClient.get('/users/likes',{params: {taskId : taskId}});
+}

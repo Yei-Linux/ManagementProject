@@ -73,6 +73,12 @@ export const drawerStyles = makeStyles(theme => ({
       color: "red"
     }
   },
+  heardIconActive: {
+    color: "red",
+    '&:hover':{
+      color: "red"
+    }
+  },
   shareIcon: {
     '&:hover':{
       color: "#43d8c9"
